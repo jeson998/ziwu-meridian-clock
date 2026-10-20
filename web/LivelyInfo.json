@@ -1,0 +1,14 @@
+{
+  "AppVersion": "1.0.0.0",
+  "Title": "子午流注·经络全息钟",
+  "Desc": "全息人体十二经络 + 粒子星环十二时辰钟（北京时间）",
+  "Author": "jeson998",
+  "License": "MIT",
+  "Contact": "https://github.com/jeson998/ziwu-meridian-clock",
+  "Type": 1,
+  "FileName": "index.html",
+  "Arguments": null,
+  "IsAbsolutePath": false,
+  "Thumbnail": "preview.png",
+  "Preview": "preview.png"
+}

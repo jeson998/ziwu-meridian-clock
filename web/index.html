@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>子午流注十二时辰 · 全息经络</title>
+<style>
+  @font-face{font-family:"Ziwu Sans";src:url(fonts/sans-cjk.woff2) format("woff2");font-weight:100 900}
+  @font-face{font-family:"Ziwu Serif";src:url(fonts/serif-cjk.woff2) format("woff2");font-weight:100 500}
+  @font-face{font-family:"Ziwu Serif";src:url(fonts/serif-cjk-bold.woff2) format("woff2");font-weight:600 900}
+  @font-face{font-family:"Ziwu Thin";src:url(fonts/notosans-var.woff2) format("woff2");font-weight:100 900}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02030a;color:#e6f7ff;
+    font-family:"Ziwu Sans","Noto Sans CJK SC","Microsoft YaHei UI","Microsoft YaHei","PingFang SC",sans-serif}
+  #gl{position:absolute;inset:0;width:100%;height:100%;display:block}
+  #dial{position:absolute;overflow:visible;pointer-events:none}
+  .serif{font-family:"Ziwu Serif","Noto Serif CJK SC","Source Han Serif SC","Songti SC","SimSun",serif}
+  .thin{font-family:"Ziwu Thin","Ziwu Sans","Noto Sans","Segoe UI Variable Display","Segoe UI","Helvetica Neue",sans-serif}
+  /* ---------- 信息面板（玻璃拟态） ---------- */
+  #panel{position:absolute;right:22px;top:38px;transform-origin:top right;width:288px;padding:26px 24px 20px;box-sizing:border-box;
+    background:linear-gradient(160deg,rgba(40,70,120,.20),rgba(10,16,40,.30) 45%,rgba(30,20,60,.22));
+    border:1px solid rgba(160,220,255,.16);border-radius:22px;backdrop-filter:blur(14px) saturate(130%);
+    -webkit-backdrop-filter:blur(14px) saturate(130%);
+    box-shadow:0 20px 60px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.10),inset 0 0 40px rgba(80,160,255,.05)}
+  #panel:before{content:"";position:absolute;inset:0;border-radius:22px;pointer-events:none;
+    background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,0) 30%)}
+  #clk{font-size:76px;font-weight:200;letter-spacing:1px;line-height:.95;color:#f4fbff;
+    text-shadow:0 0 24px rgba(120,210,255,.45);font-variant-numeric:tabular-nums}
+  #clk small{font-size:34px;font-weight:200;color:#9fd8f2;margin-left:4px}
+  #city{font-size:22px;letter-spacing:6px;margin-top:12px;color:#eef8ff}
+  #date{font-size:14.5px;color:#93bcd4;margin-top:6px;letter-spacing:1px}
+  .hr{height:1px;background:linear-gradient(90deg,rgba(160,220,255,.45),rgba(160,220,255,.05));margin:18px 0 16px}
+  #sc{font-size:14px;color:#ffd98a;letter-spacing:2px}
+  #title{font-size:29px;font-weight:600;letter-spacing:3px;margin-top:6px;white-space:nowrap;
+    background:linear-gradient(90deg,#fff3cf,#ffc861);-webkit-background-clip:text;background-clip:text;color:transparent;
+    filter:drop-shadow(0 0 10px rgba(255,190,80,.45))}
+  #title em{font-style:normal;font-size:15px;letter-spacing:2px;margin-left:8px;padding:2px 8px;border-radius:10px;
+    border:1px solid rgba(255,206,110,.6);color:#ffe2a2;-webkit-text-fill-color:#ffe2a2;vertical-align:5px}
+  #dir{font-size:13.5px;color:#9cc6dc;margin-top:6px}
+  .bar{position:relative;height:5px;border-radius:3px;background:rgba(140,190,255,.14);margin:14px 0 8px}
+  .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;
+    background:linear-gradient(90deg,#7a5cff,#46d8ff 55%,#ffe08a);box-shadow:0 0 12px rgba(120,200,255,.8)}
+  .bar b{position:absolute;top:50%;width:11px;height:11px;margin:-5.5px 0 0 -5.5px;border-radius:50%;background:#fff;
+    box-shadow:0 0 10px #fff,0 0 18px #9be7ff}
+  #remain{font-size:13px;color:#b9d9ea;display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
+  .route{font-size:12.5px;line-height:1.7;color:#a9cadb;margin-top:10px}
+  .route b{color:#ffd98a;font-weight:500;margin-right:6px}
+  h4{margin:0 0 6px;font-size:19px;font-weight:600;letter-spacing:4px;display:flex;align-items:center;gap:10px}
+  h4:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,currentColor,transparent);opacity:.35}
+  ul{margin:0 0 14px;padding:0;list-style:none;font-size:14.5px;line-height:1.86;color:#e3f3fb}
+  ul li{display:flex;align-items:center}
+  ul li:before{content:"";width:5px;height:5px;border-radius:50%;margin-right:10px;flex:none}
+  #yi li:before{background:#6ff0c0;box-shadow:0 0 6px #6ff0c0}
+  #ji li:before{background:#ff7d8c;box-shadow:0 0 6px #ff7d8c}
+  #legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:12px;color:#8fb0c4}
+  #legend span{display:flex;align-items:center;gap:7px;white-space:nowrap}
+  #legend i{width:14px;height:3px;border-radius:2px;display:inline-block;opacity:.85}
+  #legend span.on{color:#ffe7ae}
+  #legend span.on i{background:#ffcf6a!important;box-shadow:0 0 8px #ffcf6a;height:4px}
+  /* ---------- 仅预览：模拟桌面 ---------- */
+  #fake{display:none}
+  .pv #fake{display:block}
+  .icon{position:absolute;left:14px;width:76px;text-align:center;font:12px "Segoe UI","Noto Sans",sans-serif;color:#fff;text-shadow:0 1px 3px #000}
+  #task{position:absolute;left:0;right:0;bottom:0;height:48px;background:rgba(14,18,30,.62);backdrop-filter:blur(20px);
+    border-top:1px solid rgba(255,255,255,.07);font:12px "Segoe UI","Noto Sans",sans-serif;color:#dfe6ee}
+</style>
+</head>
+<body>
+<canvas id="gl"></canvas>
+<svg id="dial" viewBox="0 0 1000 1000"></svg>
+<div id="panel">
+  <div id="clk" class="thin">--:--<small>--</small></div>
+  <div id="city" class="serif">北京时间</div>
+  <div id="date">—</div>
+  <div class="hr"></div>
+  <div id="sc">—</div>
+  <div id="title" class="serif">—</div>
+  <div id="dir">—</div>
+  <div class="bar"><i id="prog"></i><b id="knob"></b></div>
+  <div id="remain"><span id="el"></span><span id="rm"></span></div>
+  <div class="route" id="route"></div>
+  <div class="hr"></div>
+  <h4 class="serif" style="color:#7ff2c8">宜</h4><ul id="yi"></ul>
+  <h4 class="serif" style="color:#ff97a2">忌</h4><ul id="ji"></ul>
+  <div class="hr" style="margin-top:4px"></div>
+  <div id="legend"></div>
+</div>
+<div id="fake">
+  <div class="icon" style="top:14px"><svg width="44" height="40" viewBox="0 0 44 40"><defs><linearGradient id="pc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd3ff"/><stop offset="1" stop-color="#1f7fd6"/></linearGradient></defs><rect x="3" y="3" width="38" height="25" rx="2" fill="url(#pc)" stroke="#cfefff" stroke-width="1.2"/><rect x="16" y="30" width="12" height="4" fill="#9fb7c8"/><rect x="11" y="34" width="22" height="2.5" rx="1" fill="#c8d6e0"/></svg><br>此电脑</div>
+  <div class="icon" style="top:96px"><svg width="40" height="42" viewBox="0 0 40 42"><path d="M8 9h24l-2.6 30H10.6z" fill="rgba(200,230,255,.35)" stroke="#e6f4ff" stroke-width="1.3"/><rect x="5" y="5" width="30" height="4" rx="1.5" fill="#dceeff"/><path d="M15 16l2 18M25 16l-2 18M20 16v18" stroke="#9fd0f0" stroke-width="1.2"/></svg><br>回收站</div>
+  <div id="task">
+    <svg style="position:absolute;left:50%;top:12px;margin-left:-12px" width="24" height="24" viewBox="0 0 24 24"><rect x="1" y="1" width="10.5" height="10.5" fill="#4cc2ff"/><rect x="12.5" y="1" width="10.5" height="10.5" fill="#4cc2ff"/><rect x="1" y="12.5" width="10.5" height="10.5" fill="#4cc2ff"/><rect x="12.5" y="12.5" width="10.5" height="10.5" fill="#4cc2ff"/></svg>
+    <div style="position:absolute;left:50%;top:9px;margin-left:30px;width:200px;height:30px;border-radius:15px;background:rgba(255,255,255,.07);line-height:30px;padding-left:14px;color:#aab4c0">🔍 搜索</div>
+    <div id="tclk" style="position:absolute;right:16px;top:8px;text-align:right;line-height:16px"></div>
+    <div style="position:absolute;right:100px;top:16px;color:#cfd8e2">中　🔈　📶</div>
+  </div>
+</div>
+<script src="meridians.js"></script>
+<script type="importmap">{"imports":{"three":"./lib/three.module.js"}}</script>
+<script type="module">
+import * as THREE from "three";
+import {EffectComposer} from "./lib/jsm/postprocessing/EffectComposer.js";
+import {RenderPass} from "./lib/jsm/postprocessing/RenderPass.js";
+import {UnrealBloomPass} from "./lib/jsm/postprocessing/UnrealBloomPass.js";
+import {ShaderPass} from "./lib/jsm/postprocessing/ShaderPass.js";
+import {OutputPass} from "./lib/jsm/postprocessing/OutputPass.js";
+import {FXAAShader} from "./lib/jsm/shaders/FXAAShader.js";
+
+const Z=window.ZIWU, M=Z.M, ORDER=Z.ORDER;
+let _seed=20261019; const rand=()=>((_seed=(_seed*16807)%2147483647)/2147483647);   // 可复现随机数
+const q=new URLSearchParams(location.search);
+let fixed=null; if(q.get("t")){const [h,m,s]=q.get("t").split(":").map(Number);fixed={h,m,s:s||0};}
+const fixedDate=q.get("d")||"2026-10-19";
+const FT=q.get("ft")!==null?Number(q.get("ft")):null;          // 预览视频：固定动画时间（秒）
+if(q.get("preview")) document.body.classList.add("pv");
+// 画质：q=high|mid|low（像素比上限 / 粒子倍率 / 帧率上限）
+const QUAL={high:{dpr:1.5,pq:1,fps:30},mid:{dpr:1.0,pq:.6,fps:24},low:{dpr:.75,pq:.35,fps:15}}[q.get("q")||"high"]||{dpr:1.5,pq:1,fps:30};
+let FPS=Number(q.get("fps"))||QUAL.fps, paused=false;
+// 工作区内边距（CSS px），由桌面程序传入，避免被任务栏遮挡；未传入时（浏览器/Lively）默认底部留 48
+const IN={t:+q.get("it")||0,b:q.get("ib")!==null?+q.get("ib"):48,l:+q.get("il")||0,r:+q.get("ir")||0};
+const RD=427;   // 表盘设计半径（设计坐标），实际按 L.f 缩放
+const BR=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+const RANGE=["23:00–01:00","01:00–03:00","03:00–05:00","05:00–07:00","07:00–09:00","09:00–11:00","11:00–13:00","13:00–15:00","15:00–17:00","17:00–19:00","19:00–21:00","21:00–23:00"];
+const GOLD=new THREE.Color(1.0,0.78,0.38);
+
+/* ===================== 布局 ===================== */
+let W=innerWidth,H=innerHeight; const L={};
+function layout(){
+  W=innerWidth;H=innerHeight;
+  const top=IN.t, Hu=Math.max(200,H-IN.t-IN.b), right=W-IN.r, left=IN.l, Wu=Math.max(300,right-left);
+  // 面板：按可用高度等比缩放，靠最右
+  const pn=document.getElementById("panel"); pn.style.transform="none";
+  const ph=pn.offsetHeight||990, pw=288;
+  const ps=Math.max(.5,Math.min((Hu-36)/ph,(Wu*0.21)/pw,3));
+  pn.style.transform=`scale(${ps})`; pn.style.right=(IN.r+20*ps)+"px"; pn.style.top=(top+Math.max(10,(Hu-ph*ps)/2))+"px";
+  const pLeft=right-20*ps-pw*ps;
+  // 表盘+人体：位于左侧 ~30% 之后、面板之前的区域内，尽量大
+  const x0=left+Wu*0.30, x1=pLeft-18*ps;
+  const ext=1+86/RD, extW=1+72/RD;
+  let Rr=Math.min((Hu/2)/ext,((x1-x0)/2)/extW);
+  Rr=Math.max(120,Rr);
+  let cx=(x0+x1)/2; const spare=(x1-x0)-2*Rr*extW;
+  if(spare>Wu*0.12) cx=x1-Rr*extW-spare*0.3;   // 超宽屏：靠右，左侧留白
+  L.cx=cx; L.cy=top+Hu/2; L.Rr=Rr; L.f=Rr/RD;
+}
+layout();
+
+/* ===================== 渲染器 ===================== */
+const canvas=document.getElementById("gl");
+const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:false,powerPreference:"high-performance",preserveDrawingBuffer:true});
+const DPR=Math.min(devicePixelRatio||1,QUAL.dpr);
+renderer.setPixelRatio(DPR); renderer.setSize(W,H,false);
+renderer.toneMapping=THREE.NoToneMapping;
+const scene=new THREE.Scene();
+const SAFE=!!q.get("safe");   // ?safe=1：关闭 AO/褶皱暗化、MSAA、Bloom，用于排查显卡问题
+const FOV=32, ELEV=7;   // 透视相机：中等视角，略高于眼平线俯视
+const camera=new THREE.PerspectiveCamera(FOV,W/H,.5,400);
+function camFit(){
+  // 人体高约 0.78H；视口中心偏移到表盘中心
+  const k=16.28/(L.Rr*1.60), vis=H*k, dist=(vis/2)/Math.tan(THREE.MathUtils.degToRad(FOV/2)), el=THREE.MathUtils.degToRad(ELEV);
+  camera.aspect=W/H; camera.position.set(0,dist*Math.sin(el),dist*Math.cos(el)); camera.lookAt(0,0,0); L.dist=dist; camera.near=Math.max(1,dist-30); camera.far=dist+60;
+  if(window.__U) window.__U.uCamD.value=dist;
+  camera.setViewOffset(W,H,W/2-L.cx,H/2-L.cy,W,H); camera.updateProjectionMatrix(); L.k=k;
+}
+camFit();
+
+/* ===================== 星云背景（fbm + 域扭曲 + 多层星空） ===================== */
+const bgMat=new THREE.ShaderMaterial({depthTest:false,depthWrite:false,
+  uniforms:{uT:{value:0},uRes:{value:new THREE.Vector2(W,H)}},
+  vertexShader:`varying vec2 vUv; void main(){vUv=uv; gl_Position=vec4(position.xy,0.9999,1.);}`,
+  fragmentShader:`
+  precision highp float; varying vec2 vUv; uniform float uT; uniform vec2 uRes;
+  float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+  float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);
+    return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),f.x),f.y);}
+  float fbm(vec2 p){float s=0.,a=.5;mat2 r=mat2(.8,-.6,.6,.8);for(int i=0;i<6;i++){s+=a*n2(p);p=r*p*2.03+11.7;a*=.5;}return s;}
+  float ridge(vec2 p){float s=0.,a=.5;mat2 r=mat2(.8,-.6,.6,.8);for(int i=0;i<5;i++){float v=1.-abs(n2(p)*2.-1.);s+=a*v*v;p=r*p*2.1+3.1;a*=.5;}return s;}
+  float stars(vec2 p,float dens,float sz,float seed){
+    vec2 g=p*dens; vec2 id=floor(g); vec2 f=fract(g)-.5; float r=h21(id+seed);
+    if(r<.86) return 0.; vec2 o=vec2(h21(id+seed+3.1),h21(id+seed+7.7))-.5; float d=length(f-o*.8);
+    float tw=.65+.35*sin(uT*(1.+r*3.)+r*40.);
+    return smoothstep(sz,0.,d)*(r-.86)/.14*tw;}
+  void main(){
+    vec2 uv=vUv; float asp=uRes.x/uRes.y; vec2 p=vec2(uv.x*asp,uv.y);
+    float t=uT*.012;
+    // 底色：深海军蓝 → 靛蓝
+    vec3 col=mix(vec3(.0008,.0012,.0045),vec3(.003,.0045,.014),smoothstep(1.2,0.,length(p-vec2(.75*asp,.5))));
+    col+=vec3(.004,.002,.010)*smoothstep(.9,0.,length(p-vec2(.2*asp,.3)));
+    // 星云带：左下 → 左上中，域扭曲
+    vec2 q=vec2(fbm(p*1.6+t),fbm(p*1.6-vec2(5.2,1.3)-t));
+    vec2 r=vec2(fbm(p*2.2+3.*q+vec2(1.7,9.2)+t*1.5),fbm(p*2.2+3.*q+vec2(8.3,2.8)-t));
+    float f=fbm(p*1.8+2.6*r);
+    vec2 a=vec2(-.04*asp,-.02),b=vec2(.36*asp,1.06); vec2 ab=b-a; float hh=clamp(dot(p-a,ab)/dot(ab,ab),0.,1.);
+    float dl=length(p-a-ab*hh)+ (fbm(p*3.+q)-.5)*.22;
+    float band=exp(-dl*dl/.020)*(.55+.45*smoothstep(0.,.35,hh))*(1.-smoothstep(.85,1.,hh)*.6);
+    float band2=exp(-pow(length(p-vec2(1.35*asp,.95))-.0,2.)/.10)*.35; // 右上微光
+    float dens=pow(smoothstep(.40,.95,f),2.2)*band;
+    float fil=pow(ridge(p*3.2+2.*r),5.)*band;
+    vec3 purple=vec3(.36,.05,.70), indigo=vec3(.07,.05,.40), teal=vec3(.0,.40,.58), magenta=vec3(.58,.08,.55);
+    vec3 neb=mix(indigo,purple,smoothstep(.2,.8,q.x));
+    neb=mix(neb,teal,smoothstep(.55,.85,r.y)*smoothstep(.25,.6,hh));
+    neb=mix(neb,magenta,smoothstep(.65,.95,q.y)*.5);
+    col+=neb*dens*1.5+mix(purple,teal,r.x)*fil*1.1+vec3(.025,.008,.06)*band*.12;
+    col+=vec3(.02,.05,.10)*band2*f;
+    // 暗尘
+    col*=1.-smoothstep(.5,.85,fbm(p*4.+r*2.))*band*.7;
+    // 多层视差星空
+    vec2 d1=vec2(uT*.0016,uT*.0004),d2=vec2(uT*.0032,uT*.0008),d3=vec2(uT*.006,uT*.0015);
+    float s=stars(p+d1,90.,.09,1.)*.55+stars(p+d2,55.,.07,5.)*.85+stars(p+d3,28.,.05,9.)*1.2;
+    s+=stars(p+d1*1.3,160.,.12,13.)*.35*(.4+band*1.5);
+    vec3 sc=mix(vec3(.75,.85,1.),vec3(1.,.9,.8),h21(floor(p*55.)));
+    col+=sc*s;
+    // 柔光晕亮星
+    for(int i=0;i<6;i++){float fi=float(i); vec2 c=vec2(h21(vec2(fi,2.))*asp,h21(vec2(fi,9.)));
+      c+=vec2(sin(uT*.05+fi),cos(uT*.04+fi))*.004;
+      float d=length(p-c); float hl=exp(-d*d*60000.)*1.3+exp(-d*260.)*.07+exp(-d*40.)*.012;
+      vec2 dd=abs(p-c); float spike=(exp(-dd.y*2500.)*exp(-dd.x*90.)+exp(-dd.x*2500.)*exp(-dd.y*90.))*.18;
+      col+=mix(vec3(.6,.8,1.),vec3(.8,.7,1.),fract(fi*.37))*(hl+spike)*(.75+.25*sin(uT*.7+fi*3.));}
+    gl_FragColor=vec4(col,1.);
+  }`});
+const bg=new THREE.Mesh(new THREE.PlaneGeometry(2,2),bgMat); bg.frustumCulled=false; bg.renderOrder=-10; scene.add(bg);
+
+/* ===================== 人体全息 ===================== */
+const root=new THREE.Group(); scene.add(root);
+const body=new THREE.Group(); root.add(body);
+const [meta,buf,MD]=await Promise.all([fetch("models/body.json").then(r=>r.json()),fetch("models/body.bin").then(r=>r.arrayBuffer()),fetch("models/meridians3d.json").then(r=>r.json())]);
+const BP=new Float32Array(buf,0,meta.nv*3), BI=new Uint32Array(buf,meta.nv*12,meta.nt*3);
+const geo=new THREE.BufferGeometry(); geo.setAttribute("position",new THREE.BufferAttribute(BP,3)); geo.setIndex(new THREE.BufferAttribute(BI,1)); geo.computeVertexNormals();
+body.position.y=-8.24;   // 身体略下移，足部落入午位
+// 近似环境光遮蔽：邻点相对法线的凹凸度（凹处变暗）
+{ const nv=meta.nv, N=geo.attributes.normal.array, acc=new Float32Array(nv), cnt=new Float32Array(nv);
+  const ed=(a,b)=>{const dx=BP[b*3]-BP[a*3],dy=BP[b*3+1]-BP[a*3+1],dz=BP[b*3+2]-BP[a*3+2]; const l=Math.hypot(dx,dy,dz)||1;
+    acc[a]+=(dx*N[a*3]+dy*N[a*3+1]+dz*N[a*3+2])/l; cnt[a]++;};
+  for(let t=0;t<BI.length;t+=3){const a=BI[t],b=BI[t+1],c=BI[t+2]; ed(a,b);ed(b,a);ed(b,c);ed(c,b);ed(a,c);ed(c,a);}
+  let ao=new Float32Array(nv); for(let i=0;i<nv;i++) ao[i]=cnt[i]?acc[i]/cnt[i]:0;
+  for(let it=0;it<2;it++){ const s2=new Float32Array(nv), c2=new Float32Array(nv);
+    for(let t=0;t<BI.length;t+=3){const v=[BI[t],BI[t+1],BI[t+2]]; for(const a of v) for(const b of v){s2[a]+=ao[b];c2[a]++;}}
+    for(let i=0;i<nv;i++) ao[i]=s2[i]/c2[i]; }
+  const A=new Float32Array(nv); for(let i=0;i<nv;i++) {const v=1-Math.max(0,ao[i]||0)*4.0; A[i]=SAFE?1:Math.min(1,Math.max(.62,isFinite(v)?v:1));}
+  geo.setAttribute("aAO",new THREE.BufferAttribute(A,1)); }
+const bb=new THREE.Box3().setFromBufferAttribute(geo.attributes.position); const FEET=bb.min.y-8.24;
+const U={uT:{value:0},uCamD:{value:L.dist||60}}; window.__U=U;
+// 深度预写（让背面经络被遮挡，表面更干净）
+// 深度预写往后推一点（polygonOffset），保证全息表面总能通过深度测试——否则与 holo 网格 z-fighting，在真实 GPU + MSAA 下出现闪烁黑斑
+const depthMesh=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({colorWrite:false,polygonOffset:true,polygonOffsetFactor:1,polygonOffsetUnits:1}));
+depthMesh.renderOrder=1; body.add(depthMesh);
+const holoMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  uniforms:U,
+  vertexShader:`attribute float aAO; varying vec3 vN; varying vec3 vW; varying vec3 vL; varying float vAO; varying float vZ;
+    void main(){vec4 w=modelMatrix*vec4(position,1.); vW=w.xyz; vL=position; vAO=clamp(aAO,0.,1.);
+      vec3 n=mat3(modelMatrix)*normal; float ln=length(n); vN=ln>1e-5?n/ln:vec3(0.,0.,1.);
+      vec4 mv=modelViewMatrix*vec4(position,1.); vZ=-mv.z; gl_Position=projectionMatrix*mv;}`,
+  fragmentShader:`uniform float uT; uniform float uCamD; varying vec3 vN; varying vec3 vW; varying vec3 vL; varying float vAO; varying float vZ;
+    float h(vec3 p){return fract(sin(dot(p,vec3(12.9898,78.233,37.719)))*43758.5453);}
+    vec3 safeN(vec3 v){float l=length(v); return l>1e-5?v/l:vec3(0.,0.,1.);}
+    void main(){ vec3 V=safeN(cameraPosition-vW); vec3 N=safeN(vN); float nv=clamp(abs(dot(N,V)),0.,1.);
+      float e=max(1.-nv,1e-4); float fr=smoothstep(.05,1.,pow(e,1.8)), fr2=pow(e,1.2);
+      float scan=pow(.5+.5*sin(vL.y*42.-uT*.8),4.)*.07;
+      float band=exp(-pow((fract(vL.y*.055-uT*.03)-.5)*12.,2.));
+      float y=clamp(vL.y/16.3,0.,1.);
+      vec3 deep=mix(vec3(.0,.06,.20),vec3(.02,.10,.26),y);
+      vec3 rim=mix(vec3(.26,.74,.90),vec3(1.,.90,.72),.18);   // 柔和青绿，略偏金白
+      vec3 c=deep*(.08+fr2*.30)+rim*fr*.55+rim*band*.07*(.3+fr2)+rim*scan*(.3+fr2)*.5;
+      // 体积感：主光（左上前方，随相机固定）+ 包裹漫反射 + 微高光 + 内部玉质透光 + 近亮远暗 + 凹处 AO
+      vec3 Lg=normalize(vec3(-.45,.60,.66));
+      float dif=clamp(dot(N,Lg)*.6+.4,0.,1.); dif*=dif;
+      float spec=pow(max(dot(reflect(-Lg,N),V),1e-4),22.);
+      vec3 jade=vec3(.10,.42,.52);
+      c+=jade*dif*.21*vAO + vec3(.75,.92,1.)*spec*.10*vAO + vec3(.03,.13,.17)*pow(max(nv,1e-4),2.5)*.55;
+      float dz=clamp((uCamD-vZ)/2.2,-1.,1.);
+      c*=(.80+.28*dz)*mix(.70,1.,vAO);
+      c=clamp(c,vec3(0.),vec3(.58));   // 保持在 Bloom 阈值以下，只留柔光
+      gl_FragColor=vec4(c,1.);}`});
+const holo=new THREE.Mesh(geo,holoMat); holo.renderOrder=2; body.add(holo);
+// 细线框
+const wire=new THREE.LineSegments(new THREE.WireframeGeometry(geo),new THREE.LineBasicMaterial({color:0x2aa8e8,transparent:true,opacity:.018,blending:THREE.AdditiveBlending,depthWrite:false}));
+wire.renderOrder=3; body.add(wire);
+// 点云闪烁
+const npt=meta.nv; const rnd=new Float32Array(npt); for(let i=0;i<npt;i++)rnd[i]=rand();
+const pg=new THREE.BufferGeometry(); pg.setAttribute("position",new THREE.BufferAttribute(BP,3)); pg.setAttribute("aR",new THREE.BufferAttribute(rnd,1));
+const ptMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uT:U.uT,uS:{value:DPR}},
+  vertexShader:`attribute float aR; uniform float uT; uniform float uS; varying float vA;
+    void main(){vec4 mv=modelViewMatrix*vec4(position,1.); gl_Position=projectionMatrix*mv;
+      float tw=pow(.5+.5*sin(uT*(.35+aR*.6)+aR*60.),3.); vA=.025+tw*.22*step(.6,aR); gl_PointSize=(1.0+tw*.8)*uS;}`,
+  fragmentShader:`varying float vA; void main(){float d=length(gl_PointCoord-.5); gl_FragColor=vec4(vec3(.55,.9,1.)*vA*smoothstep(.5,0.,d),1.);}`});
+const pts=new THREE.Points(pg,ptMat); pts.renderOrder=4; body.add(pts);
+
+/* ===================== 经络 ===================== */
+const discTex=(()=>{const c=document.createElement("canvas");c.width=c.height=64;const g=c.getContext("2d");const r=g.createRadialGradient(32,32,0,32,32,32);
+  r.addColorStop(0,"rgba(255,255,255,1)");r.addColorStop(.18,"rgba(255,255,255,.85)");r.addColorStop(.45,"rgba(255,255,255,.22)");r.addColorStop(1,"rgba(255,255,255,0)");g.fillStyle=r;g.fillRect(0,0,64,64);return new THREE.CanvasTexture(c);})();
+const merG=new THREE.Group(); body.add(merG);
+const MER={};
+// 清理折线：去掉过近的点（<0.03）和 >150° 的折返尖刺，避免 TubeGeometry 的 Frenet 标架出现 NaN/翻转
+function cleanPts(v){ let o=[]; for(const p of v){ if(!isFinite(p.x+p.y+p.z)) continue; if(o.length&&p.distanceTo(o[o.length-1])<.03) continue; o.push(p); }
+  for(let pass=0;pass<3;pass++){ const r=[o[0]]; for(let i=1;i<o.length-1;i++){ const a=o[i].clone().sub(r[r.length-1]), b=o[i+1].clone().sub(o[i]);
+      const c=a.dot(b)/((a.length()*b.length())||1); if(c<-.87) continue; r.push(o[i]); } if(o.length>1) r.push(o[o.length-1]); o=r; }
+  return o.length>=2?o:v.slice(0,2); }
+// 扫描几何体属性中的 NaN/Inf 并修正
+function fixGeo(g){ let bad=0; const n=g.attributes.normal, p=g.attributes.position;
+  if(n){ const a=n.array; for(let i=0;i<a.length;i+=3){ const l=Math.hypot(a[i],a[i+1],a[i+2]); if(!(l>1e-6)||!isFinite(l)){a[i]=0;a[i+1]=0;a[i+2]=1;bad++;} } }
+  if(p){ const a=p.array; for(let i=0;i<a.length;i++){ if(!isFinite(a[i])){a[i]=0;bad++;} } }
+  if(bad) console.warn("fixGeo: fixed",bad); return g; }
+for(const k of ORDER){
+  MER[k]={segs:MD[k].segs.map(s=>{const v=cleanPts(s.pts.map(p=>new THREE.Vector3(p[0],p[1],p[2])));const curve=new THREE.CatmullRomCurve3(v,false,"centripetal");
+    const len=curve.getLength(); const headY=v.reduce((a,p)=>a+p.y,0)/v.length; return {curve,len,n:v.length,head:headY>13.9,anchors:s.anchors};})};
+}
+// 经络管：带光照的 3D 圆管；far=true 时只画被身体遮挡的部分（GreaterDepth），强度约 30%
+const tubeVS=`varying vec3 vN; varying vec3 vV; void main(){vec4 mv=modelViewMatrix*vec4(position,1.); vec3 n=normalMatrix*normal; float ln=length(n); vN=ln>1e-5?n/ln:vec3(0.,0.,1.); vV=length(mv.xyz)>1e-5?normalize(-mv.xyz):vec3(0.,0.,1.); gl_Position=projectionMatrix*mv;}`;
+const dimMat=(c,op,far)=>{const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  uniforms:{uC:{value:new THREE.Color(c).multiplyScalar(.9)},uO:{value:op*(far?.30:1)}},vertexShader:tubeVS,
+  fragmentShader:`uniform vec3 uC; uniform float uO; varying vec3 vN; varying vec3 vV;
+    void main(){vec3 N=length(vN)>1e-5?normalize(vN):vec3(0.,0.,1.); float d=clamp(dot(N,normalize(vec3(-.4,.6,.7)))*.5+.5,0.,1.); float f=clamp(abs(dot(N,vV)),0.,1.);
+      gl_FragColor=vec4(uC*uO*(.45+.85*d*d)*(.55+.45*f),1.);}`});
+  if(far) m.depthFunc=THREE.GreaterDepth; return m;};
+const activeMat=(r,see)=>{const m=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,
+  uniforms:{uT:U.uT,uL:{value:1},uGlow:{value:r}},
+  vertexShader:`varying vec2 vUv; varying vec3 vN; void main(){vUv=uv; vec3 n=normalMatrix*normal; float ln=length(n); vN=ln>1e-5?n/ln:vec3(0.,0.,1.); gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform float uT; uniform float uL; uniform float uGlow; varying vec2 vUv; varying vec3 vN;
+    void main(){ float x=vUv.x*uL; float ph=fract(x/1.7-uT*.55); float pulse=pow(smoothstep(.70,1.,ph),3.)*(1.-smoothstep(.985,1.,ph));
+      float fine=.5+.5*sin(x*14.-uT*9.);
+      float edge=1.-abs(vUv.y*2.-1.);
+      vec3 gold=vec3(1.,.66,.22), hot=vec3(1.,.90,.62);
+      vec3 c; if(uGlow>.5){ c=gold*(.15+pulse*.5+fine*.03)*edge*edge; }
+      else if(uGlow>.25){ float d=clamp(dot(vN,normalize(vec3(-.4,.6,.7)))*.5+.5,0.,1.); c=(gold*(.62+fine*.10)*(.6+.5*d)+hot*pulse)*.45; }
+      else if(uGlow>.05){ c=gold*(.15+pulse*.5)*edge*edge*.45; }
+      else { float d=clamp(dot(vN,normalize(vec3(-.4,.6,.7)))*.5+.5,0.,1.); c=gold*(.62+fine*.10)*(.6+.5*d)+hot*pulse*1.0; }
+      gl_FragColor=vec4(c,1.);}`}); if(see) m.depthFunc=THREE.GreaterDepth; return m;};
+let activeKey=null; const flows=[]; let acuPts=null;
+const flowMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uS:{value:DPR},uMap:{value:discTex}},
+  vertexShader:`attribute float aSize; attribute float aB; varying float vB; uniform float uS;
+    void main(){vec4 mv=modelViewMatrix*vec4(position,1.); gl_Position=projectionMatrix*mv; vB=aB; gl_PointSize=aSize*uS;}`,
+  fragmentShader:`uniform sampler2D uMap; varying float vB; void main(){vec4 t=texture2D(uMap,gl_PointCoord); gl_FragColor=vec4(mix(vec3(1.,.62,.20),vec3(1.,.92,.70),vB)*t.a*(.45+vB*.9),1.);}`});
+const flowMatX=flowMat.clone(); flowMatX.depthFunc=THREE.GreaterDepth; flowMatX.uniforms=flowMat.uniforms;
+flowMatX.fragmentShader=flowMat.fragmentShader.replace("*(.45+vB*.9),1.)","*(.45+vB*.9)*.45,1.)");
+const acuMat=new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uT:U.uT,uS:{value:DPR},uMap:{value:discTex}},
+  vertexShader:`attribute float aP; attribute float aBig; uniform float uT; uniform float uS; varying float vP;
+    void main(){vec4 mv=modelViewMatrix*vec4(position,1.); gl_Position=projectionMatrix*mv; vP=.5+.5*sin(uT*2.6-aP*.9); gl_PointSize=(9.+vP*9.+aBig*12.)*uS;}`,
+  fragmentShader:`uniform sampler2D uMap; varying float vP; void main(){float a=texture2D(uMap,gl_PointCoord).a; gl_FragColor=vec4(vec3(1.,.82,.48)*a*(.55+vP*.8),1.);}`});
+const acuMatX=acuMat.clone(); acuMatX.depthFunc=THREE.GreaterDepth; acuMatX.uniforms=acuMat.uniforms;
+acuMatX.fragmentShader=acuMat.fragmentShader.replace("*(.55+vP*.8),1.)","*(.55+vP*.8)*.42,1.)");
+function setActive(key){
+  if(key===activeKey) return; activeKey=key; merG.clear(); flows.length=0;
+  for(const k of ORDER){
+    for(const s of MER[k].segs){
+      const seg=Math.max(16,Math.round(s.n*1.6));
+      if(k!==key){
+        const op=s.head?.18:.42, tg=fixGeo(new THREE.TubeGeometry(s.curve,seg,s.head?.007:.018,6,false));
+        const m=new THREE.Mesh(tg,dimMat(M[k].color,op,false)), mf=new THREE.Mesh(tg,dimMat(M[k].color,op,true)); m.renderOrder=5; mf.renderOrder=5; merG.add(mf,m);
+      }else{
+        const core=fixGeo(new THREE.TubeGeometry(s.curve,seg*2,s.head?.020:.032,8,false));
+        const glow=fixGeo(new THREE.TubeGeometry(s.curve,seg*2,s.head?.06:.11,8,false));
+        const mc=activeMat(0,false); mc.uniforms.uL.value=s.len; const mg=activeMat(1,false); mg.uniforms.uL.value=s.len;
+        // X 光透视：不做深度测试，约 40% 强度，背面也能看到当令经络
+        const ms=activeMat(.2,true); ms.uniforms.uL.value=s.len;
+        const mx=activeMat(.3,true); mx.uniforms.uL.value=s.len;
+        const a=new THREE.Mesh(core,mc),b=new THREE.Mesh(glow,mg),c=new THREE.Mesh(glow,ms),d=new THREE.Mesh(core,mx);
+        a.renderOrder=7;b.renderOrder=6;c.renderOrder=5;d.renderOrder=5;
+        merG.add(c,d,b,a);
+        // 流动粒子
+        const N=Math.max(6,Math.round(s.len/.12)); const g=new THREE.BufferGeometry();
+        const sz=new Float32Array(N), br=new Float32Array(N); for(let i=0;i<N;i++){const r=rand(); sz[i]=r<.08?11+rand()*5:3.5+rand()*4; br[i]=r<.08?1:rand()*.5;}
+        g.setAttribute("position",new THREE.BufferAttribute(new Float32Array(N*3),3)); g.setAttribute("aSize",new THREE.BufferAttribute(sz,1)); g.setAttribute("aB",new THREE.BufferAttribute(br,1));
+        const P=new THREE.Points(g,flowMat); P.renderOrder=8; P.frustumCulled=false; merG.add(P);
+        const PX=new THREE.Points(g,flowMatX); PX.renderOrder=5; PX.frustumCulled=false; merG.add(PX);
+        const LUT=s.curve.getSpacedPoints(Math.max(60,Math.round(s.len*30)));
+        const off=new Float32Array(N), jit=new Float32Array(N*3); for(let i=0;i<N;i++){off[i]=(i+rand()*.6)/N; jit[i*3]=(rand()-.5)*.05;jit[i*3+1]=(rand()-.5)*.05;jit[i*3+2]=(rand()-.5)*.05;}
+        flows.push({g,N,LUT,len:s.len,off,jit});
+      }
+    }
+  }
+  // 穴位点（起止穴位更大）
+  const A=[],AP=[],AB=[];
+  MER[key].segs.forEach(s=>s.anchors.forEach((a,i)=>{A.push(...a.p);AP.push(A.length/3);AB.push(0);}));
+  const codes=MER[key].segs.flatMap(s=>s.anchors.map(a=>a.code));
+  const first=key+"1", lastN=Math.max(...codes.map(c=>parseInt(c.replace(/^\D+/,""))||0));
+  codes.forEach((c,i)=>{if(c===first||c===key+lastN)AB[i]=1;});
+  const ag=new THREE.BufferGeometry(); ag.setAttribute("position",new THREE.Float32BufferAttribute(A,3)); ag.setAttribute("aP",new THREE.Float32BufferAttribute(AP,1)); ag.setAttribute("aBig",new THREE.Float32BufferAttribute(AB,1));
+  acuPts=new THREE.Points(ag,acuMat); acuPts.renderOrder=9; merG.add(acuPts);
+  const acuX=new THREE.Points(ag,acuMatX); acuX.renderOrder=5; merG.add(acuX);
+}
+function updateFlow(t){
+  for(const f of flows){const a=f.g.attributes.position.array, n=f.LUT.length-1, sp=.55/f.len;
+    for(let i=0;i<f.N;i++){const u=(f.off[i]+t*sp)%1; const x=u*n, j=Math.floor(x), fr=x-j; const p0=f.LUT[j], p1=f.LUT[Math.min(j+1,n)];
+      a[i*3]=p0.x+(p1.x-p0.x)*fr+f.jit[i*3]; a[i*3+1]=p0.y+(p1.y-p0.y)*fr+f.jit[i*3+1]; a[i*3+2]=p0.z+(p1.z-p0.z)*fr+f.jit[i*3+2];}
+    f.g.attributes.position.needsUpdate=true;}
+}
+// 身后柔光（增加层次）
+const haloTex=(()=>{const c=document.createElement("canvas");c.width=c.height=256;const g=c.getContext("2d");const r=g.createRadialGradient(128,128,0,128,128,128);
+  r.addColorStop(0,"rgba(60,150,255,.10)");r.addColorStop(.5,"rgba(60,90,220,.035)");r.addColorStop(1,"rgba(40,40,160,0)");g.fillStyle=r;g.fillRect(0,0,256,256);return new THREE.CanvasTexture(c);})();
+const halo=new THREE.Mesh(new THREE.PlaneGeometry(13,19),new THREE.MeshBasicMaterial({map:haloTex,transparent:true,depthWrite:false,depthTest:false,blending:THREE.AdditiveBlending}));
+halo.position.set(0,0,-4); halo.renderOrder=0; root.add(halo);
+// 环内星尘（位于人体之后，增加纵深）
+const dustMat=new THREE.ShaderMaterial({transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uT:U.uT},
+  vertexShader:`varying vec2 vUv; void main(){vUv=uv*2.-1.; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform float uT; varying vec2 vUv;
+    float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+    float n2(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1,0)),f.x),mix(h21(i+vec2(0,1)),h21(i+vec2(1,1)),f.x),f.y);}
+    float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<5;i++){s+=a*n2(p);p=p*2.07+7.3;a*=.5;}return s;}
+    void main(){ float r=length(vUv); if(r>1.)discard; float a=atan(vUv.y,vUv.x);
+      float sw=a+r*2.6-uT*.03; vec2 q=vec2(cos(sw),sin(sw))*r*3.;
+      float f=fbm(q+fbm(q*1.7+uT*.02)*1.5);
+      float m=smoothstep(1.,.80,r)*smoothstep(.15,.7,r);
+      float d=pow(smoothstep(.45,.95,f),2.)*m;
+      float st=step(.996,h21(floor(vUv*420.)))*m*(.5+.5*sin(uT*2.+h21(floor(vUv*420.))*40.));
+      vec3 c=mix(vec3(.10,.30,.60),vec3(.45,.25,.70),smoothstep(.3,.8,fbm(q*.7)));
+      c=mix(c,vec3(.9,.6,.25),smoothstep(.6,.9,fbm(q*1.3+3.))*.5);
+      gl_FragColor=vec4(c*d*.22+vec3(.7,.85,1.)*st*.5,1.);}`});
+// 地面光盘 + 接触阴影（锚定 3D 空间）
+const shadowM=new THREE.Mesh(new THREE.CircleGeometry(2.6,48),new THREE.ShaderMaterial({transparent:true,depthWrite:false,
+  vertexShader:`varying vec2 vP; void main(){vP=position.xy; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec2 vP; void main(){float r=length(vP*vec2(1.,1.6))/2.6; gl_FragColor=vec4(0.,0.,0.,exp(-r*r*6.)*.6);}`}));
+shadowM.rotation.x=-Math.PI/2; shadowM.position.y=FEET+.01; shadowM.renderOrder=0.5; root.add(shadowM);
+const floorM=new THREE.Mesh(new THREE.CircleGeometry(4.6,96),new THREE.ShaderMaterial({transparent:true,depthWrite:false,blending:THREE.AdditiveBlending,uniforms:{uT:U.uT},
+  vertexShader:`varying vec2 vP; void main(){vP=position.xy; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform float uT; varying vec2 vP; void main(){float r=length(vP); float a=atan(vP.y,vP.x);
+    float glow=exp(-r*r*.35)*.10;
+    float ring=exp(-pow((r-3.2)*9.,2.))*.22+exp(-pow((r-4.2)*14.,2.))*.12+exp(-pow((r-1.9)*16.,2.))*.07;
+    float tick=step(.92,fract(a*36./6.2831853+uT*.01))*exp(-pow((r-3.65)*10.,2.))*.12;
+    float fade=smoothstep(4.6,3.8,r);
+    vec3 c=mix(vec3(.18,.55,.75),vec3(1.,.78,.45),.25)*(glow+ring+tick)*fade;
+    gl_FragColor=vec4(c,1.);}`}));
+floorM.rotation.x=-Math.PI/2; floorM.scale.setScalar(.78); floorM.position.y=FEET; floorM.renderOrder=0.6; root.add(floorM);
+const dust=new THREE.Mesh(new THREE.PlaneGeometry(1,1),dustMat); dust.renderOrder=-5; root.add(dust);
+function fitDust(){const dir=camera.position.clone().normalize(), dd=L.dist+6, wpp=2*dd*Math.tan(FOV/2*Math.PI/180)/H; const R=L.Rr*2*wpp;
+  dust.scale.set(R,R,1); dust.position.copy(dir).multiplyScalar(-6); dust.lookAt(camera.position);
+  halo.position.copy(dir).multiplyScalar(-4); halo.lookAt(camera.position); const hs=(L.dist+4)/L.dist; halo.scale.set(hs*1.25,hs*1.25,1);}
+fitDust();
+
+/* ===================== 后期：Bloom + 色调 + 颗粒/暗角 ===================== */
+const MSAA=(SAFE||q.get("q")==="low"||q.get("q")==="mid")?0:4;   // MSAA 仅“高”画质；中/低用 FXAA
+const composer=new EffectComposer(renderer,new THREE.WebGLRenderTarget(Math.round(W*DPR),Math.round(H*DPR),{type:THREE.HalfFloatType,samples:MSAA}));
+composer.setPixelRatio(DPR); composer.setSize(W,H);
+composer.addPass(new RenderPass(scene,camera));
+// NaN/Inf 清洗 + 亮度上限：任何异常像素都不会经 Bloom mip 链扩散成黑块
+const scrub=new ShaderPass({uniforms:{tDiffuse:{value:null}},
+  vertexShader:`varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform sampler2D tDiffuse; varying vec2 vUv;
+    void main(){ vec4 c=texture2D(tDiffuse,vUv);
+      bvec4 bad=bvec4(isnan(c.r)||isinf(c.r),isnan(c.g)||isinf(c.g),isnan(c.b)||isinf(c.b),isnan(c.a)||isinf(c.a));
+      if(any(bad)) c=vec4(0.,0.,0.,1.);
+      gl_FragColor=vec4(clamp(c.rgb,vec3(0.),vec3(8.)),1.); }`});
+composer.addPass(scrub);
+const bloom=new UnrealBloomPass(new THREE.Vector2(W,H),0.75,0.45,0.62); composer.addPass(bloom); if(SAFE) bloom.enabled=false;
+composer.addPass(new OutputPass());
+const grain=new ShaderPass({uniforms:{tDiffuse:{value:null},uT:{value:0},uRes:{value:new THREE.Vector2(W,H)}},
+  vertexShader:`varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform sampler2D tDiffuse; uniform float uT; uniform vec2 uRes; varying vec2 vUv;
+    float h(vec2 p){return fract(sin(dot(p,vec2(12.9898,78.233)))*43758.5453);}
+    void main(){vec3 c=texture2D(tDiffuse,vUv).rgb; vec2 d=vUv-vec2(.555,.5); d.x*=uRes.x/uRes.y;
+      float v=smoothstep(1.25,.35,length(d)); c*=mix(.62,1.,v);
+      c+=(h(vUv*uRes+fract(uT*7.3)*100.)-.5)*.022; gl_FragColor=vec4(c,1.);}`});
+composer.addPass(grain);
+const fxaa=new ShaderPass(FXAAShader); fxaa.uniforms.resolution.value.set(1/(W*DPR),1/(H*DPR)); fxaa.enabled=!SAFE&&MSAA===0; composer.addPass(fxaa);
+
+/* ===================== 表盘 v3：粒子星环（three.js GPU 粒子 + Bloom，文字用 SVG 保证清晰） ===================== */
+const NS="http://www.w3.org/2000/svg", dial=document.getElementById("dial");
+const el=(t,a,p,txt)=>{const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(txt!==undefined)e.textContent=txt;(p||SVROOT||dial).appendChild(e);return e;};
+let SVROOT=null;
+const TAU=Math.PI*2, D2R=Math.PI/180;
+const dialScene=new THREE.Scene();
+const ortho=new THREE.OrthographicCamera(-1,1,1,-1,-10,10);
+const DU={uT:{value:0},uRr:{value:400},uS:{value:DPR},uAct:{value:0},uHead:{value:0},uStart:{value:0},uSec:{value:0},
+  uCols:{value:ORDER.map(k=>new THREE.Color(M[k].color).lerp(new THREE.Color(.45,.78,1.0),.55))}};
+const GLSL_COMMON=`uniform float uT; uniform float uRr; uniform float uS; uniform float uAct; uniform float uHead; uniform float uStart; uniform float uSec; uniform vec3 uCols[12];
+  varying vec3 vC; const float TAU=6.2831853; const vec3 GOLD=vec3(1.,.70,.28);
+  vec2 polar(float a,float r){return vec2(sin(a),cos(a))*r;}`;
+const FRAG_DISC=`varying vec3 vC; void main(){vec2 d=gl_PointCoord-.5; float r2=dot(d,d)*4.; float a=exp(-r2*5.)+exp(-r2*40.)*.8; if(r2>1.)discard; gl_FragColor=vec4(vC*a,1.);}`;
+function pointsMat(vs){return new THREE.ShaderMaterial({uniforms:DU,vertexShader:GLSL_COMMON+vs,fragmentShader:FRAG_DISC,transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending});}
+function pool(n,fill){const g=new THREE.BufferGeometry(); const A={};
+  for(let i=0;i<n;i++){const o=fill(i); for(const k in o){(A[k]||(A[k]=[])).push(o[k]);}}
+  g.setAttribute("position",new THREE.Float32BufferAttribute(new Float32Array(n*3),3));
+  for(const k in A) g.setAttribute(k,new THREE.Float32BufferAttribute(A[k],1)); g.boundingSphere=new THREE.Sphere(new THREE.Vector3(),1e5); return g;}
+const gauss=()=>{let u=0,v=0;while(!u)u=rand();while(!v)v=rand();return Math.sqrt(-2*Math.log(u))*Math.cos(TAU*v);};
+// 1) 环带星尘：主带 / 宽尘 / 内轨 / 外轨（刻度轨）
+const NR=Math.round(32000*QUAL.pq); const RING=pool(NR,i=>{const fr=i/NR, L=fr<.281?0:fr<.594?4:fr<.8125?1:fr<.922?2:3; return {aA:rand()*TAU,aR:gauss(),aS:rand(),aZ:L===1?1.2+rand()*2.2:(rand()<.05?4+rand()*3:1.2+rand()*2.0),aK:rand(),aL:L,aF:Math.floor(rand()*7)};});
+const ringMat=pointsMat(`attribute float aA,aR,aS,aZ,aK,aL,aF;
+  void main(){
+    float spd = aL<.5?.020: aL<1.5?.010: aL<2.5?-.014: aL<3.5?.006:.016;
+    float ang=aA+uT*spd*(aL>3.5?1.:(.7+.6*aS));
+    float w = aL<.5?7.: aL<1.5?30.: aL<2.5?3.5: aL<3.5?2.2:1.1;
+    float base= aL<2.5||aL>3.5 ? (aL<1.5||aL>3.5?uRr:uRr*.86) : uRr+44.;
+    float r;
+    if(aL>3.5){ // 交织能量丝：7 条正弦流线
+      float k=4.+aF, ph=aF*1.7;
+      r=base+sin(ang*k+ph+uT*(.25+aF*.05))*(5.+aF*1.6)+sin(ang*(k*2.3)+ph*2.+uT*.4)*2.5+aR*w;
+    } else r=base+aR*w+sin(uT*(.4+aK)+aK*50.)*w*.25+sin(ang*9.+uT*.25+aK*6.)*w*.35;
+    float sec=floor(mod(ang+TAU/24.,TAU)/(TAU/12.)); float loc=fract((ang+TAU/24.)/(TAU/12.));
+    float gap=smoothstep(0.,.05,loc)*smoothstep(1.,.95,loc);
+    bool act=abs(sec-uAct)<.5 && (aL<1.5||aL>3.5);
+    vec3 c=uCols[int(sec)];
+    if(aL>3.5) c=mod(aF,2.)<.5? mix(c,vec3(1.,.78,.42),.55) : mix(c,vec3(.45,.9,1.),.5);
+    float tw=.55+.45*sin(uT*(1.3+aK*3.)+aK*90.);
+    float b = aL<.5?1.0: aL<1.5?.22: aL<2.5?.28: aL<3.5?.32:1.45;
+    if(aL>2.5&&aL<3.5) c=vec3(.6,.85,1.);
+    if(act){ c=GOLD; b*=1.05; }
+    if(aL<1.5||aL>3.5) b*=mix(.15,1.,gap);
+    vC=c*b*tw;
+    gl_PointSize=aZ*uS*(act?1.2:1.);
+    gl_Position=projectionMatrix*modelViewMatrix*vec4(polar(ang,r),0.,1.);}`);
+dialScene.add(new THREE.Points(RING,ringMat));
+// 2) 当令时辰：加密高速金色粒子流
+const ACT=pool(Math.round(6000*QUAL.pq),i=>({aU:rand(),aR:gauss(),aK:rand(),aZ:rand()<.08?4.5+rand()*3:1.4+rand()*2.4}));
+dialScene.add(new THREE.Points(ACT,pointsMat(`attribute float aU,aR,aK,aZ;
+  void main(){ float u=fract(aU+uT*(.035+.05*aK)); float span=TAU/12.;
+    float ang=uAct*span-span*.5+u*span; float w=5.5+9.*aK*aK;
+    float r=uRr+aR*w+sin(uT*2.+aK*40.)*2.5+sin(ang*24.-uT*3.)*3.*aK;
+    float edge=smoothstep(0.,.05,u)*smoothstep(1.,.95,u);
+    float tw=.6+.4*sin(uT*(3.+aK*4.)+aK*70.);
+    vC=mix(vec3(1.,.62,.20),vec3(1.,.93,.72),pow(aK,3.))*edge*tw*.26;
+    gl_PointSize=aZ*uS; gl_Position=projectionMatrix*modelViewMatrix*vec4(polar(ang,r),0.,1.);}`)));
+// 3) 彗星尾：从本时辰起点到当前时刻
+const TAIL=pool(Math.round(3000*QUAL.pq),i=>({aU:Math.pow(rand(),.6),aR:gauss(),aK:rand(),aZ:1.5+rand()*3.}));
+dialScene.add(new THREE.Points(TAIL,pointsMat(`attribute float aU,aR,aK,aZ;
+  void main(){ float len=max(uHead-uStart,.22); float ang=uHead-len*(1.-aU);
+    float w=2.+10.*(1.-aU); float r=uRr+aR*w*.6+sin(uT*3.+aK*30.)*1.5*(1.-aU);
+    float sh=.65+.35*sin(aU*80.-uT*7.);
+    vC=mix(vec3(1.,.55,.15),vec3(1.,.95,.78),aU*aU)*pow(aU,1.6)*sh*1.1;
+    gl_PointSize=aZ*uS*(.6+aU*.9); gl_Position=projectionMatrix*modelViewMatrix*vec4(polar(ang,r),0.,1.);}`)));
+// 4) 秒针火花：外轨上一分钟一圈
+const SEC=pool(Math.round(500*QUAL.pq),i=>({aU:rand(),aR:gauss(),aK:rand()}));
+dialScene.add(new THREE.Points(SEC,pointsMat(`attribute float aU,aR,aK;
+  void main(){ float ang=uSec-aU*.42; float r=uRr+44.+aR*(1.+aU*3.);
+    vC=vec3(.45,.92,1.)*pow(1.-aU,2.2)*1.1; gl_PointSize=(1.4+(1.-aU)*2.8)*uS;
+    gl_Position=projectionMatrix*modelViewMatrix*vec4(polar(ang,r),0.,1.);}`)));
+// 5) 当令节点 → 身体的金色能量流（淡）
+const STREAM=pool(Math.round(900*QUAL.pq),i=>({aU:rand(),aR:gauss(),aK:rand()}));
+dialScene.add(new THREE.Points(STREAM,pointsMat(`attribute float aU,aR,aK;
+  void main(){ float u=fract(aU+uT*(.10+.08*aK)); float a0=uAct*TAU/12.;
+    vec2 p0=polar(a0,uRr-28.), p2=polar(a0+.10,uRr*.40), p1=polar(a0-.22,uRr*.78);
+    vec2 p=mix(mix(p0,p1,u),mix(p1,p2,u),u); vec2 n=normalize(vec2(-(p2-p0).y,(p2-p0).x));
+    p+=n*aR*(3.+u*14.)+n*sin(u*12.-uT*2.+aK*6.)*5.;
+    vC=vec3(1.,.72,.32)*u*(1.-u)*4.*.6*(1.-u*.5); gl_PointSize=(1.2+aK*2.2)*uS;
+    gl_Position=projectionMatrix*modelViewMatrix*vec4(p,0.,1.);}`)));
+// 6) 光晕：节点、彗星头、秒针头、刻度星点（CPU 更新少量点）
+const NG=new THREE.BufferGeometry(); const NMAX=12+3+24+12;
+NG.setAttribute("position",new THREE.Float32BufferAttribute(new Float32Array(NMAX*3),3));
+NG.setAttribute("color",new THREE.Float32BufferAttribute(new Float32Array(NMAX*3),3));
+NG.setAttribute("size",new THREE.Float32BufferAttribute(new Float32Array(NMAX),1)); NG.boundingSphere=new THREE.Sphere(new THREE.Vector3(),1e5);
+const haloPts=new THREE.Points(NG,new THREE.ShaderMaterial({uniforms:{uS:DU.uS},transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending,
+  vertexShader:`attribute vec3 color; attribute float size; uniform float uS; varying vec3 vC; void main(){vC=color; gl_PointSize=size*uS; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`varying vec3 vC; void main(){vec2 d=gl_PointCoord-.5; float r=length(d)*2.; if(r>1.)discard; float a=exp(-r*r*7.)*.9+exp(-r*r*60.)*1.2+ (1.-smoothstep(.0,.02,abs(r-.55)))*.0; float ring=exp(-pow((r-.42)*18.,2.))*.35; gl_FragColor=vec4(vC*(a+ring),1.);}`}));
+dialScene.add(haloPts);
+// 7) 中心到彗星头的淡光束
+const beamMat=new THREE.ShaderMaterial({uniforms:{uT:DU.uT},transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending,
+  vertexShader:`varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform float uT; varying vec2 vUv; void main(){ float x=abs(vUv.x-.5)*2.; float core=exp(-x*x*60.), glow=exp(-x*x*5.)*.22;
+    float a=smoothstep(.05,.95,vUv.y); a*=a; float fl=.85+.15*sin(vUv.y*40.-uT*6.); gl_FragColor=vec4(vec3(1.,.74,.36)*(core*.55+glow)*a*fl,1.);}`});
+const beam=new THREE.Mesh(new THREE.PlaneGeometry(1,1),beamMat); dialScene.add(beam);
+// 8) 环形柔光晕（全屏四边形，按半径高斯）
+const glowMat=new THREE.ShaderMaterial({uniforms:{uRr:DU.uRr,uAct:DU.uAct,uT:DU.uT},transparent:true,depthTest:false,depthWrite:false,blending:THREE.AdditiveBlending,
+  vertexShader:`varying vec2 vP; void main(){vP=position.xy; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}`,
+  fragmentShader:`uniform float uRr; uniform float uAct; uniform float uT; varying vec2 vP;
+    void main(){ float r=length(vP); float a=atan(vP.x,vP.y); if(a<0.)a+=6.2831853;
+      float d=(r-uRr)/uRr; float g=exp(-d*d*1400.)*.16+exp(-d*d*120.)*.05;
+      float ac=a/(6.2831853/12.); float da=abs(ac-uAct); da=min(da,12.-da);
+      float act=exp(-da*da*2.2)*.45;
+      vec3 c=mix(vec3(.25,.55,1.),vec3(1.,.66,.26),act)*(g*(1.+act*2.2));
+      gl_FragColor=vec4(c,1.);}`});
+const glowQ=new THREE.Mesh(new THREE.PlaneGeometry(1,1),glowMat); dialScene.add(glowQ);
+glowQ.renderOrder=-1;
+
+// SVG：节点圆、地支字、时段、24h 刻度与数字、HH:MM 标签
+let SV={};
+function buildDial(){
+  const Rr=RD, f=L.f; DU.uRr.value=RD; DU.uS.value=DPR*f; SVROOT=null;
+  ortho.left=-L.cx/f; ortho.right=(W-L.cx)/f; ortho.top=L.cy/f; ortho.bottom=(L.cy-H)/f; ortho.updateProjectionMatrix();
+  glowQ.scale.set(Rr*3,Rr*3,1);
+  const d=dial; Object.assign(d.style,{left:"0px",top:"0px",width:W+"px",height:H+"px"}); d.setAttribute("viewBox",`0 0 ${W} ${H}`);
+  d.innerHTML=`<defs>
+   <filter id="tg" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+   <filter id="tg2" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+   <radialGradient id="orb"><stop offset="0" stop-color="#0a1230" stop-opacity=".85"/><stop offset=".75" stop-color="#0b1838" stop-opacity=".62"/><stop offset="1" stop-color="#2a4a80" stop-opacity=".25"/></radialGradient>
+   <radialGradient id="orbA"><stop offset="0" stop-color="#3a2408" stop-opacity=".78"/><stop offset=".7" stop-color="#5a3a0e" stop-opacity=".55"/><stop offset="1" stop-color="#ffcf6a" stop-opacity=".35"/></radialGradient></defs>`;
+  SVROOT=el("g",{transform:`translate(${L.cx} ${L.cy}) scale(${f})`},dial);
+  const P=(r,deg)=>[r*Math.sin(deg*D2R),-r*Math.cos(deg*D2R)];
+  // 24h 刻度（细、星点感）
+  const rt=Rr+44;
+  for(let i=0;i<96;i++){const a=i*3.75,h=i%4===0;const [x0,y0]=P(rt-(h?6:2.5),a),[x1,y1]=P(rt+(h?6:2.5),a);
+    el("line",{x1:x0,y1:y0,x2:x1,y2:y1,stroke:h?"#dff6ff":"#9fd8ff","stroke-opacity":h?.75:.28,"stroke-width":h?1.3:.8});}
+  for(let h=0;h<24;h++){const [x,y]=P(rt+19,h*15);el("text",{x,y:y+5.5,"text-anchor":"middle","font-size":h%6===0?17:14.5,"font-weight":h%6===0?500:300,
+    fill:h%6===0?"#f2fbff":"#bfe0f2","fill-opacity":h%6===0?.95:.75,class:"thin"},null,String(h));}
+  // 12 分界细光痕
+  for(let i=0;i<12;i++){const a=i*30+15;const [x0,y0]=P(Rr-16,a),[x1,y1]=P(Rr+16,a);el("line",{x1:x0,y1:y0,x2:x1,y2:y1,stroke:"#cfefff","stroke-opacity":".55","stroke-width":".9"});}
+  // 节点
+  SV.nodes=[];
+  for(let i=0;i<12;i++){const a=i*30; const [x,y]=P(Rr,a); const g=el("g",{});
+    const ring2=el("circle",{cx:x,cy:y,r:31,fill:"none",stroke:"#9fdcff","stroke-opacity":".18","stroke-width":"1","stroke-dasharray":"2 4"},g);
+    const orb=el("circle",{cx:x,cy:y,r:24,fill:"url(#orb)",stroke:"#bfe8ff","stroke-opacity":".75","stroke-width":"1.2"},g);
+    const ch=el("text",{x,y:y+10,"text-anchor":"middle","font-size":28,"font-weight":600,fill:"#f2f9ff",class:"serif",filter:"url(#tg)"},g,BR[i]);
+    const [tx,ty]=P(Rr-(Math.abs(Math.sin(a*D2R))>.5?92:58),a);
+    const tm=el("text",{x:tx,y:ty+5,"text-anchor":"middle","font-size":14.5,"font-weight":400,fill:"#bfe0f2",class:"thin",
+      style:"letter-spacing:.3px;paint-order:stroke;stroke:rgba(2,6,20,.7);stroke-width:3px"},g,RANGE[i]);
+    SV.nodes.push({g,ring2,orb,ch,tm,x,y});}
+  // HH:MM 标签
+  SV.tag=el("g",{});
+  el("rect",{x:-40,y:-15,width:80,height:30,rx:15,fill:"rgba(30,18,4,.62)",stroke:"#ffcf6a","stroke-width":"1.2","stroke-opacity":".85"},SV.tag);
+  SV.tagT=el("text",{x:0,y:7,"text-anchor":"middle","font-size":20,"font-weight":500,fill:"#fff0c4",class:"thin",style:"letter-spacing:1px"},SV.tag,"");
+  SV.act=-1;
+}
+buildDial();
+const dialPass=new RenderPass(dialScene,ortho); dialPass.clear=false; dialPass.clearDepth=true; composer.insertPass(dialPass,1);
+function dialSetActive(idx){
+  SV.act=idx; DU.uAct.value=idx;
+  SV.nodes.forEach((n,i)=>{const on=i===idx;
+    n.orb.setAttribute("r",on?33:24); n.orb.setAttribute("fill",on?"url(#orbA)":"url(#orb)"); n.orb.setAttribute("stroke",on?"#ffd88a":"#bfe8ff"); n.orb.setAttribute("stroke-width",on?"1.8":"1.2");
+    n.ring2.setAttribute("r",on?44:31); n.ring2.setAttribute("stroke",on?"#ffd27a":"#9fdcff"); n.ring2.setAttribute("stroke-opacity",on?".55":".18");
+    n.ch.setAttribute("font-size",on?38:28); n.ch.setAttribute("y",n.y+(on?13:10)); n.ch.setAttribute("fill",on?"#fff4d6":"#f2f9ff"); n.ch.setAttribute("filter",on?"url(#tg2)":"url(#tg)");
+    n.tm.setAttribute("fill",on?"#ffe6a8":"#bfe0f2"); n.tm.setAttribute("font-size",on?16:14.5); n.tm.setAttribute("font-weight",on?500:400);});
+}
+function dialUpdate(T,hf,sf,tsec,idx){
+  if(SV.act!==idx) dialSetActive(idx);
+  const Rr=RD; DU.uT.value=tsec;
+  const head=hf*15*D2R; let st=((23+2*idx)%24)*15*D2R; let hd=head; if(hd<st) hd+=TAU; // 处理子时跨 0 点
+  DU.uHead.value=hd; DU.uStart.value=st; DU.uSec.value=sf/60*TAU;
+  // 光晕点
+  const pa=NG.attributes.position.array, ca=NG.attributes.color.array, sa=NG.attributes.size.array; let n=0;
+  const put=(x,y,c,s)=>{pa[n*3]=x;pa[n*3+1]=y;pa[n*3+2]=0;ca[n*3]=c[0];ca[n*3+1]=c[1];ca[n*3+2]=c[2];sa[n]=s;n++;};
+  const pul=.5+.5*Math.sin(tsec*2.4);
+  for(let i=0;i<12;i++){const a=i*30*D2R; const on=i===idx; put(Math.sin(a)*Rr,Math.cos(a)*Rr,on?[1,.7,.3].map(v=>v*(.38+pul*.16)):[.30,.55,.9],on?82+pul*16:80);}
+  put(Math.sin(head)*Rr,Math.cos(head)*Rr,[1,.82,.5],70); put(Math.sin(head)*Rr,Math.cos(head)*Rr,[1,.95,.85],22);
+  const sA=sf/60*TAU; put(Math.sin(sA)*(Rr+44),Math.cos(sA)*(Rr+44),[.6,.95,1],16);
+  for(let h=0;h<24;h++){const a=h*15*D2R, tw=.5+.5*Math.sin(tsec*1.7+h*2.3); put(Math.sin(a)*(Rr+44),Math.cos(a)*(Rr+44),[.5,.8,1].map(v=>v*(.35+tw*.35)),h%6===0?12:8);}
+  for(let i=0;i<12;i++){const a=(i*30+15)*D2R; put(Math.sin(a)*Rr,Math.cos(a)*Rr,[.7,.9,1].map(v=>v*.6),9);}
+  NG.setDrawRange(0,n); NG.attributes.position.needsUpdate=NG.attributes.color.needsUpdate=NG.attributes.size.needsUpdate=true;
+  // 光束
+  const len=Rr-30; beam.scale.set(20,len,1); beam.rotation.z=-head; beam.position.set(Math.sin(head)*len/2,Math.cos(head)*len/2,0);
+  // 标签：彗星头内侧，避开时段文字（时段文字在 Rr-58，标签放 Rr-112）
+  const tr=Rr-132; SV.tag.setAttribute("transform",`translate(${Math.sin(head)*tr} ${-Math.cos(head)*tr})`); SV.tagT.textContent=`${p2(T.h)}:${p2(T.m)}`;
+}
+
+/* ===================== 宜 / 忌（每时辰 5 条） ===================== */
+const YJ=[
+ {yi:["23点前入睡，养胆护阳","熄灯保持卧室暗而静","睡前温水泡脚","放下手机，平心静气","右侧卧，助气血归经"],ji:["熬夜加班","夜宵油腻","浓茶咖啡","剧烈运动","情绪激动"]},
+ {yi:["深度熟睡，养肝藏血","保持环境安静","被褥温暖舒适","身心彻底放松","侧卧屈膝，气血归肝"],ji:["熬夜不眠","饮酒","动怒生气","进食宵夜","刷屏看手机"]},
+ {yi:["熟睡养肺","注意保暖护胸背","室内空气流通","呼吸深长均匀","起夜动作宜缓"],ji:["受凉吹风","吸烟","过早剧烈晨练","空调直吹","惊醒焦虑"]},
+ {yi:["起床饮一杯温水","定时排便","开窗换气，舒展筋骨","顺时针揉腹","叩齿梳头"],ji:["憋便","空腹喝冷饮","贪睡赖床","久蹲看手机","晨起即吸烟"]},
+ {yi:["按时吃早餐","温热易消化","细嚼慢咽","粥蛋奶营养均衡","餐后静坐片刻"],ji:["不吃早餐","生冷油腻","边走边吃","暴饮暴食","餐后剧烈运动"]},
+ {yi:["专注高效工作学习","适量饮温水","起身走动，舒展四肢","按揉足三里、三阴交","保持心情愉快"],ji:["久坐不动","思虑过度","甜腻零食","生冷寒凉","午前暴食"]},
+ {yi:["小憩15–30分钟","静心养神","心平气和","午餐七分饱","闭目调息"],ji:["剧烈运动","大喜大悲","午睡过长","饭后立即平卧","浓茶咖啡"]},
+ {yi:["饭后缓步","多饮温水","适量吃水果","揉肩活颈","轻松处理事务"],ji:["暴饮暴食","饭后即卧","辛辣刺激","久坐低头","贪食冷饮"]},
+ {yi:["多补充水分","适当运动出汗","高效学习工作","及时排尿","敲打腿后侧"],ji:["憋尿","久坐不饮水","过食咸味","受寒着凉","疲劳硬撑"]},
+ {yi:["晚餐清淡适量","温水泡脚","放松休息","揉搓腰眼","适量黑色食物"],ji:["过度劳累","晚餐过饱","房劳过度","过食咸味","大汗淋漓"]},
+ {yi:["散步、慢跑","温水沐浴","与家人愉快交谈","听舒缓音乐","按揉内关穴"],ji:["情绪压抑","剧烈争执","饱食即卧","刺激性影视","熬夜加班"]},
+ {yi:["静卧修养生息","准备入眠","冥想、深呼吸","温水泡脚","23点前入睡"],ji:["熬夜玩手机","饮浓茶咖啡","思虑过度","剧烈运动","进食夜宵"]},
+];
+const legend=document.getElementById("legend");
+ORDER.forEach((k,i)=>legend.insertAdjacentHTML("beforeend",`<span data-k="${k}"><i style="background:${M[k].color}"></i>${BR[i]} · ${M[k].name}</span>`));
+
+/* ===================== 时间驱动 ===================== */
+const WEEK="日一二三四五六", p2=n=>String(n).padStart(2,"0");
+const t0=performance.now();
+function now(){
+  if(fixed){const d=new Date(fixedDate+"T00:00:00"); const add=FT||0; let s=fixed.h*3600+fixed.m*60+fixed.s+add;
+    return {h:Math.floor(s/3600)%24,m:Math.floor(s/60)%60,s:Math.floor(s)%60,ms:(s%1)*1000,date:d};}
+  const d=new Date(), b=new Date(d.getTime()+(d.getTimezoneOffset()+480)*60000);
+  return {h:b.getHours(),m:b.getMinutes(),s:b.getSeconds(),ms:b.getMilliseconds(),date:b};
+}
+let curIdx=-1;
+// 人体旋转：spin=周期秒（90/60/30），0 = 停止并回到正面；匀速，正面附近略慢
+let SPIN=q.get("spin")!==null?Number(q.get("spin")):60, spPh0=0, spT0=0, spCur=0, spLast=null;
+function spinPhase(t){return SPIN>0? spPh0+(t-spT0)*Math.PI*2/SPIN : spPh0;}
+function setSpin(v,t){ spPh0=spinPhase(t); spT0=t; SPIN=Math.max(0,Number(v)||0); }
+function spinAngle(t){
+  const dt=spLast===null?0:Math.min(.5,Math.max(0,t-spLast)); spLast=t;
+  if(SPIN>0){ const ph=spinPhase(t); spCur=ph-0.22*Math.sin(ph); return spCur; }   // dθ/dt 在正面为 0.78×，背面 1.22×
+  const target=Math.round(spCur/(Math.PI*2))*Math.PI*2; spCur+=(target-spCur)*Math.min(1,dt*1.8); spPh0=spCur; return spCur;
+}
+function frame(tsec){
+  const T=now(), sf=T.s+T.ms/1000, hf=T.h+T.m/60+sf/3600;
+  const idx=Math.floor(((T.h+1)%24)/2);
+  if(idx!==curIdx){
+    curIdx=idx; const key=ORDER[idx], m=M[key]; setActive(key);
+    if(!L.laid){L.laid=true; setTimeout(()=>dispatchEvent(new Event("resize")),0);}
+    document.getElementById("sc").textContent=`${BR[idx]}时　${RANGE[idx]}`;
+    document.getElementById("title").innerHTML=`${m.name}<em>当令</em>`;
+    document.getElementById("dir").textContent=`循行　${m.dir}`;
+    document.getElementById("route").innerHTML=`<b>起</b>${m.start}<br><b>止</b>${m.end}`;
+    document.getElementById("yi").innerHTML=YJ[idx].yi.map(x=>`<li>${x}</li>`).join("");
+    document.getElementById("ji").innerHTML=YJ[idx].ji.map(x=>`<li>${x}</li>`).join("");
+    legend.querySelectorAll("span").forEach(s=>s.classList.toggle("on",s.dataset.k===key));
+  }
+  document.getElementById("clk").innerHTML=`${p2(T.h)}:${p2(T.m)}<small>${p2(Math.floor(sf))}</small>`;
+  const D=T.date; document.getElementById("date").textContent=`${D.getFullYear()}年${D.getMonth()+1}月${D.getDate()}日　星期${WEEK[D.getDay()]}`;
+  const tc=document.getElementById("tclk"); if(tc) tc.innerHTML=`${p2(T.h)}:${p2(T.m)}<br>${D.getFullYear()}/${D.getMonth()+1}/${D.getDate()}`;
+  const start=(23+2*idx)%24; const e_=(hf-start+24)%24, pct=e_/2, remain=Math.round((2-e_)*3600);
+  document.getElementById("prog").style.width=(pct*100).toFixed(2)+"%"; document.getElementById("knob").style.left=(pct*100).toFixed(2)+"%";
+  document.getElementById("el").textContent=`已过 ${Math.floor(e_*60)} 分 · ${Math.round(pct*100)}%`;
+  document.getElementById("rm").textContent=`剩余 ${Math.floor(remain/60)} 分 ${p2(remain%60)} 秒`;
+  dialUpdate(T,hf,sf,tsec,idx);
+  // 3D
+  body.rotation.y = q.get("rot")!==null ? Number(q.get("rot"))*Math.PI/180 : spinAngle(tsec);
+  U.uT.value=tsec; bgMat.uniforms.uT.value=tsec+40; grain.uniforms.uT.value=tsec;
+  updateFlow(tsec);
+  if(q.get("nopost")) renderer.render(scene,camera); else composer.render();
+}
+// 30fps 上限
+let last=-1;
+function loop(ts){
+  if(paused){ setTimeout(()=>requestAnimationFrame(loop),500); return; }
+  requestAnimationFrame(loop); if(ts-last<1000/FPS-1) return; last=ts; frame((ts-t0)/1000); }
+// 桌面程序消息：{type:"pause"|"resume"|"fps",v}
+try{ if(window.chrome&&window.chrome.webview) window.chrome.webview.addEventListener("message",ev=>{
+  let m=ev.data; if(typeof m==="string"){try{m=JSON.parse(m);}catch(e){m={type:m};}}
+  if(!m) return;
+  if(m.type==="pause") paused=true;
+  else if(m.type==="resume"){ paused=false; }
+  else if(m.type==="fps" && m.v>0) FPS=Math.min(60,Number(m.v));
+  else if(m.type==="spin") setSpin(m.v,(performance.now()-t0)/1000);
+  else if(m.type==="insets"){ IN.t=+m.t||0; IN.b=+m.b||0; IN.l=+m.l||0; IN.r=+m.r||0; dispatchEvent(new Event("resize")); }
+}); }catch(e){}
+document.fonts && document.fonts.ready.then(()=>{ dispatchEvent(new Event("resize")); });
+addEventListener("resize",()=>{layout();renderer.setSize(innerWidth,innerHeight,false);composer.setSize(innerWidth,innerHeight);camFit();bgMat.uniforms.uRes.value.set(W,H);grain.uniforms.uRes.value.set(W,H); fxaa.uniforms.resolution.value.set(1/(W*DPR),1/(H*DPR)); buildDial(); fitDust(); [ptMat,flowMat,acuMat].forEach(m=>m.uniforms.uS.value=DPR*Math.max(.7,L.f)); if(FT!==null||fixed) frame(FT!==null?FT:6.0);});
+// 调试：?nancheck=1 —— 把主场景渲染到 Float 目标，统计 NaN/Inf 像素（多个旋转角度）
+if(q.get("nancheck")){ const rt=new THREE.WebGLRenderTarget(960,540,{type:THREE.FloatType}); const buf=new Float32Array(960*540*4); const out=[];
+  for(let a=0;a<360;a+=30){ body.rotation.y=a*Math.PI/180; U.uT.value=6+a*.01; renderer.setRenderTarget(rt); renderer.clear(); renderer.render(scene,camera);
+    renderer.readRenderTargetPixels(rt,0,0,960,540,buf); let nan=0,inf=0,neg=0,mx=0; for(let i=0;i<buf.length;i++){const v=buf[i]; if(v!==v)nan++; else if(!isFinite(v))inf++; else {if(v<0)neg++; if((i&3)!==3&&v>mx)mx=v;}}
+    out.push(`rot${a}: nan=${nan} inf=${inf} neg=${neg} max=${mx.toFixed(2)}`); }
+  renderer.setRenderTarget(null); const pre=document.createElement("pre"); pre.id="NAN"; pre.textContent=out.join("\n"); document.body.appendChild(pre); }
+if(FT!==null||fixed){ const ts=FT!==null?FT:6.0; let n=0; const kick=()=>{frame(ts); if(++n<6) setTimeout(kick,250); else window.__ready=true;}; kick(); }
+else requestAnimationFrame(loop);
+</script>
+</body>
+</html>

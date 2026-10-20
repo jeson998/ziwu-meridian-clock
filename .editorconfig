@@ -1,0 +1,41 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{cs,csx}]
+indent_size = 4
+csharp_new_line_before_open_brace = all
+csharp_prefer_braces = when_multiline:suggestion
+dotnet_sort_system_directives_first = true
+csharp_style_var_for_built_in_types = true:silent
+
+[*.{csproj,props,targets,xml,manifest}]
+indent_size = 2
+
+[*.{ps1,psm1}]
+end_of_line = crlf
+indent_size = 4
+
+[*.txt]
+end_of_line = crlf
+trim_trailing_whitespace = false
+
+[*.md]
+trim_trailing_whitespace = false
+
+[web/lib/**]
+# vendored three.js — keep upstream formatting
+charset = unset
+indent_style = unset
+indent_size = unset
+trim_trailing_whitespace = unset
+insert_final_newline = unset
+
+[*.py]
+indent_size = 4

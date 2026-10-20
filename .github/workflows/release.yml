@@ -1,0 +1,65 @@
+name: Release
+
+on:
+  push:
+    tags: [ 'v*' ]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Existing tag to (re)build, e.g. v1.0.0'
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+    env:
+      TAG: ${{ github.event.inputs.tag || github.ref_name }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Resolve version
+        id: ver
+        shell: pwsh
+        run: |
+          $v = $env:TAG.TrimStart('v')
+          "version=$v" >> $env:GITHUB_OUTPUT
+      - name: Build & package
+        shell: pwsh
+        run: ./scripts/build.ps1 -Version ${{ steps.ver.outputs.version }}
+      - name: Release notes
+        shell: pwsh
+        run: |
+          $notes = "docs/release-notes/RELEASE_NOTES_$env:TAG.md"
+          if (-not (Test-Path $notes)) { "See [CHANGELOG.md](https://github.com/${{ github.repository }}/blob/main/CHANGELOG.md)." | Set-Content notes.md } else { Copy-Item $notes notes.md }
+      # 若该版本的 Release 已经手动发布并带有资产，则只做构建验证，不重复上传、不覆盖说明
+      - name: Check existing release
+        id: exist
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $names = ""
+          try { $names = gh release view $env:TAG --repo ${{ github.repository }} --json assets --jq '.assets[].name' 2>$null } catch { }
+          if ($LASTEXITCODE -ne 0) { $names = "" }
+          $want = "ZiwuMeridianClock-v${{ steps.ver.outputs.version }}-win-x64.zip"
+          if ($names -match [regex]::Escape($want)) { "skip=true" >> $env:GITHUB_OUTPUT; Write-Host "Release $env:TAG already has $want — skipping upload." }
+          else { "skip=false" >> $env:GITHUB_OUTPUT }
+          $global:LASTEXITCODE = 0
+      - name: Upload to GitHub Release
+        if: steps.exist.outputs.skip != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: 子午流注·经络全息钟 ${{ env.TAG }}
+          body_path: notes.md
+          files: |
+            dist/ZiwuMeridianClock-v${{ steps.ver.outputs.version }}-win-x64.zip
+            dist/ZiwuMeridianClock-v${{ steps.ver.outputs.version }}-web.zip
+            dist/SHA256SUMS.txt
