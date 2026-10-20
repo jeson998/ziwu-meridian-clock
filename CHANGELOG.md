@@ -5,6 +5,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-10-20
+
+### 新增
+- 信息面板新增 **当令要义**：一句话说明当令经络的核心养生思路，例如“胃主受纳，早餐最易消化吸收”。
+- 宜忌分为三组：**宜做** 3 条、**宜食** 2 条、**忌** 3 条，每条都附一句简短理由。
+- 新增 **养生穴位**：每个时辰推荐 1 个位于当令经络上的穴位，并注明简单的按揉方法，例如辰时足三里、子时风池。
+- 面板底部新增免责提示：“以上为传统养生参考，不能替代医疗诊断”。
+
+### 变更
+- **十二时辰宜忌全部重写**：各时辰之间不再重复，内容都与当令经络的生理特点相关。
+- 信息面板宽度从 288px 加宽到 340px，并重新调整了排版和字号层级。
+- 版本号升级为 1.1.0（程序集、清单、LivelyInfo）。
+- README 更新了面板截图、桌面预览和十二时辰对照表。
+
 ## [1.0.0] - 2026-10-20
 
 First public release. 首个正式版。
@@ -55,5 +69,6 @@ First public release. 首个正式版。
 - `?safe=1` (or tray → 高级 → 安全模式) disables crease darkening, MSAA and bloom to help isolate GPU-specific problems.
 - `?nancheck=1` reports NaN/Inf pixel counts of the scene render target.
 
-[Unreleased]: https://github.com/jeson998/ziwu-meridian-clock/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/jeson998/ziwu-meridian-clock/compare/v1.1.0...HEAD
+[1.1.0]: https://github.com/jeson998/ziwu-meridian-clock/compare/v1.0.0...v1.1.0
 [1.0.0]: https://github.com/jeson998/ziwu-meridian-clock/releases/tag/v1.0.0

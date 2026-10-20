@@ -25,7 +25,7 @@
 - **12 meridians as 3D tubes** that follow textbook pathways. Each has its own colour and is mirrored left and right.
 - **The active meridian glows gold**, with particles flowing in its correct direction. When the body turns away, the hidden parts show through as a depth-aware x-ray.
 - **Particle star-ring dial** of about 32k GPU particles. The current time is a golden comet and the seconds are a cyan spark.
-- **Glassmorphism info panel** showing Beijing time, the active meridian, its start and end acupoints, the progress through the double-hour, and 5 do's and 5 don'ts.
+- **Glassmorphism info panel** showing Beijing time, the active meridian, its start and end acupoints, the progress through the double-hour, a key principle, 3 do's, 2 food tips and 3 don'ts (each with a short reason), and an acupoint on the ruling meridian (v1.1.0, panel widened to 340px).
 - **Real wallpaper layer**: the page is embedded behind the desktop icons using the WorkerW method, including on Win11 24H2. It recovers automatically after Explorer restarts, display changes, or sleep.
 - **Light on resources**: it pauses while a fullscreen app is in front and slows down on battery. There are 3 quality levels plus a safe mode.
 - **Fully offline**: a single self-contained exe; no separate .NET install is needed.
@@ -36,9 +36,21 @@
 |:--:|:--:|:--:|:--:|
 | <img src="docs/images/rot_0.jpg"/> | <img src="docs/images/rot_45.jpg"/> | <img src="docs/images/rot_90.jpg"/> | <img src="docs/images/rot_180.jpg"/> |
 
+### Info panel (new in v1.1.0)
+
+| 08:00 · Stomach | 23:30 · Gallbladder |
+|:--:|:--:|
+| <img src="docs/images/panel_0800.jpg" width="280"/> | <img src="docs/images/panel_2330.jpg" width="280"/> |
+
+## What's new in v1.1.0
+
+- The do's and don'ts for all 12 double-hours have been rewritten. Nothing repeats between periods, and every item relates to the ruling meridian.
+- New panel sections: a **key principle**, **3 do's**, **2 food tips** and **3 don'ts**, each with a short reason, plus a **health acupoint** that lies on the ruling meridian.
+- A disclaimer line at the bottom of the panel. The panel is wider, 340px instead of 288px.
+
 ## Install
 
-1. Download `ZiwuMeridianClock-v1.0.0-win-x64.zip` from [Releases](https://github.com/jeson998/ziwu-meridian-clock/releases/latest).
+1. Download `ZiwuMeridianClock-v1.1.0-win-x64.zip` from [Releases](https://github.com/jeson998/ziwu-meridian-clock/releases/latest).
 2. Unzip all of it (keep `web\` next to the exe) and run `ZiwuMeridianClock.exe`.
 3. Requirements:
    - Windows 10 1809+ or Windows 11, 64-bit;

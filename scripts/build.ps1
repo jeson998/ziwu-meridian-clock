@@ -1,4 +1,4 @@
-# Build on Windows (PowerShell 5+/7, .NET SDK 8). Usage: .\scripts\build.ps1 [-Version 1.0.0]
+# Build on Windows (PowerShell 5+/7, .NET SDK 8). Usage: .\scripts\build.ps1 [-Version 1.1.0]
 param([string]$Version = "")
 $ErrorActionPreference = "Stop"
 $Root = Split-Path -Parent $PSScriptRoot

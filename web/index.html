@@ -15,7 +15,7 @@
   .serif{font-family:"Ziwu Serif","Noto Serif CJK SC","Source Han Serif SC","Songti SC","SimSun",serif}
   .thin{font-family:"Ziwu Thin","Ziwu Sans","Noto Sans","Segoe UI Variable Display","Segoe UI","Helvetica Neue",sans-serif}
   /* ---------- 信息面板（玻璃拟态） ---------- */
-  #panel{position:absolute;right:22px;top:38px;transform-origin:top right;width:288px;padding:26px 24px 20px;box-sizing:border-box;
+  #panel{position:absolute;right:22px;top:38px;transform-origin:top right;width:340px;padding:22px 22px 16px;box-sizing:border-box;
     background:linear-gradient(160deg,rgba(40,70,120,.20),rgba(10,16,40,.30) 45%,rgba(30,20,60,.22));
     border:1px solid rgba(160,220,255,.16);border-radius:22px;backdrop-filter:blur(14px) saturate(130%);
     -webkit-backdrop-filter:blur(14px) saturate(130%);
@@ -27,7 +27,7 @@
   #clk small{font-size:34px;font-weight:200;color:#9fd8f2;margin-left:4px}
   #city{font-size:22px;letter-spacing:6px;margin-top:12px;color:#eef8ff}
   #date{font-size:14.5px;color:#93bcd4;margin-top:6px;letter-spacing:1px}
-  .hr{height:1px;background:linear-gradient(90deg,rgba(160,220,255,.45),rgba(160,220,255,.05));margin:18px 0 16px}
+  .hr{height:1px;background:linear-gradient(90deg,rgba(160,220,255,.45),rgba(160,220,255,.05));margin:14px 0 12px}
   #sc{font-size:14px;color:#ffd98a;letter-spacing:2px}
   #title{font-size:29px;font-weight:600;letter-spacing:3px;margin-top:6px;white-space:nowrap;
     background:linear-gradient(90deg,#fff3cf,#ffc861);-webkit-background-clip:text;background-clip:text;color:transparent;
@@ -43,13 +43,22 @@
   #remain{font-size:13px;color:#b9d9ea;display:flex;justify-content:space-between;font-variant-numeric:tabular-nums}
   .route{font-size:12.5px;line-height:1.7;color:#a9cadb;margin-top:10px}
   .route b{color:#ffd98a;font-weight:500;margin-right:6px}
-  h4{margin:0 0 6px;font-size:19px;font-weight:600;letter-spacing:4px;display:flex;align-items:center;gap:10px}
+  #gist{font-size:13px;line-height:1.5;color:#ffe7b8;margin:-2px 0 12px;padding:6px 10px;border-left:2px solid rgba(255,206,110,.7);
+    background:linear-gradient(90deg,rgba(255,200,100,.10),transparent);border-radius:0 8px 8px 0;letter-spacing:.5px}
+  h4{margin:0 0 4px;font-size:16px;font-weight:600;letter-spacing:4px;display:flex;align-items:center;gap:10px}
   h4:after{content:"";flex:1;height:1px;background:linear-gradient(90deg,currentColor,transparent);opacity:.35}
-  ul{margin:0 0 14px;padding:0;list-style:none;font-size:14.5px;line-height:1.86;color:#e3f3fb}
-  ul li{display:flex;align-items:center}
-  ul li:before{content:"";width:5px;height:5px;border-radius:50%;margin-right:10px;flex:none}
+  ul{margin:0 0 9px;padding:0;list-style:none;font-size:14px;line-height:1.3;color:#e3f3fb}
+  ul li{display:flex;align-items:baseline;margin-bottom:4px}
+  ul li:before{content:"";width:5px;height:5px;border-radius:50%;margin-right:9px;flex:none;transform:translateY(-3px)}
+  ul li span{display:block}
+  ul li small{font-size:11.5px;color:#86a6b9;margin-left:7px;letter-spacing:0}
   #yi li:before{background:#6ff0c0;box-shadow:0 0 6px #6ff0c0}
+  #eat li:before{background:#ffbb7a;box-shadow:0 0 6px #ffbb7a}
   #ji li:before{background:#ff7d8c;box-shadow:0 0 6px #ff7d8c}
+  #xue{font-size:13px;color:#e8d6a8;line-height:1.45;margin-top:2px}
+  #xue b{color:#ffd36a;font-weight:600;margin-right:6px;text-shadow:0 0 8px rgba(255,200,90,.5)}
+  #xue small{font-size:11.5px;color:#b0a07a;margin-left:4px}
+  #disc{font-size:10.5px;color:#6f8899;margin-top:10px;text-align:center;letter-spacing:.5px}
   #legend{display:grid;grid-template-columns:1fr 1fr;gap:4px 10px;font-size:12px;color:#8fb0c4}
   #legend span{display:flex;align-items:center;gap:7px;white-space:nowrap}
   #legend i{width:14px;height:3px;border-radius:2px;display:inline-block;opacity:.85}
@@ -78,10 +87,14 @@
   <div id="remain"><span id="el"></span><span id="rm"></span></div>
   <div class="route" id="route"></div>
   <div class="hr"></div>
-  <h4 class="serif" style="color:#7ff2c8">宜</h4><ul id="yi"></ul>
+  <div id="gist" class="serif"></div>
+  <h4 class="serif" style="color:#7ff2c8">宜做</h4><ul id="yi"></ul>
+  <h4 class="serif" style="color:#ffbb7a">宜食</h4><ul id="eat"></ul>
   <h4 class="serif" style="color:#ff97a2">忌</h4><ul id="ji"></ul>
+  <h4 class="serif" style="color:#ffd36a">养生穴位</h4><div id="xue"></div>
   <div class="hr" style="margin-top:4px"></div>
   <div id="legend"></div>
+  <div id="disc">以上为传统养生参考，不能替代医疗诊断</div>
 </div>
 <div id="fake">
   <div class="icon" style="top:14px"><svg width="44" height="40" viewBox="0 0 44 40"><defs><linearGradient id="pc" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#7fd3ff"/><stop offset="1" stop-color="#1f7fd6"/></linearGradient></defs><rect x="3" y="3" width="38" height="25" rx="2" fill="url(#pc)" stroke="#cfefff" stroke-width="1.2"/><rect x="16" y="30" width="12" height="4" fill="#9fb7c8"/><rect x="11" y="34" width="22" height="2.5" rx="1" fill="#c8d6e0"/></svg><br>此电脑</div>
@@ -128,8 +141,8 @@ function layout(){
   const top=IN.t, Hu=Math.max(200,H-IN.t-IN.b), right=W-IN.r, left=IN.l, Wu=Math.max(300,right-left);
   // 面板：按可用高度等比缩放，靠最右
   const pn=document.getElementById("panel"); pn.style.transform="none";
-  const ph=pn.offsetHeight||990, pw=288;
-  const ps=Math.max(.5,Math.min((Hu-36)/ph,(Wu*0.21)/pw,3));
+  const ph=pn.offsetHeight||990, pw=340;
+  const ps=Math.max(.5,Math.min((Hu-36)/ph,(Wu*0.235)/pw,3));
   pn.style.transform=`scale(${ps})`; pn.style.right=(IN.r+20*ps)+"px"; pn.style.top=(top+Math.max(10,(Hu-ph*ps)/2))+"px";
   const pLeft=right-20*ps-pw*ps;
   // 表盘+人体：位于左侧 ~30% 之后、面板之前的区域内，尽量大
@@ -628,18 +641,18 @@ function dialUpdate(T,hf,sf,tsec,idx){
 
 /* ===================== 宜 / 忌（每时辰 5 条） ===================== */
 const YJ=[
- {yi:["23点前入睡，养胆护阳","熄灯保持卧室暗而静","睡前温水泡脚","放下手机，平心静气","右侧卧，助气血归经"],ji:["熬夜加班","夜宵油腻","浓茶咖啡","剧烈运动","情绪激动"]},
- {yi:["深度熟睡，养肝藏血","保持环境安静","被褥温暖舒适","身心彻底放松","侧卧屈膝，气血归肝"],ji:["熬夜不眠","饮酒","动怒生气","进食宵夜","刷屏看手机"]},
- {yi:["熟睡养肺","注意保暖护胸背","室内空气流通","呼吸深长均匀","起夜动作宜缓"],ji:["受凉吹风","吸烟","过早剧烈晨练","空调直吹","惊醒焦虑"]},
- {yi:["起床饮一杯温水","定时排便","开窗换气，舒展筋骨","顺时针揉腹","叩齿梳头"],ji:["憋便","空腹喝冷饮","贪睡赖床","久蹲看手机","晨起即吸烟"]},
- {yi:["按时吃早餐","温热易消化","细嚼慢咽","粥蛋奶营养均衡","餐后静坐片刻"],ji:["不吃早餐","生冷油腻","边走边吃","暴饮暴食","餐后剧烈运动"]},
- {yi:["专注高效工作学习","适量饮温水","起身走动，舒展四肢","按揉足三里、三阴交","保持心情愉快"],ji:["久坐不动","思虑过度","甜腻零食","生冷寒凉","午前暴食"]},
- {yi:["小憩15–30分钟","静心养神","心平气和","午餐七分饱","闭目调息"],ji:["剧烈运动","大喜大悲","午睡过长","饭后立即平卧","浓茶咖啡"]},
- {yi:["饭后缓步","多饮温水","适量吃水果","揉肩活颈","轻松处理事务"],ji:["暴饮暴食","饭后即卧","辛辣刺激","久坐低头","贪食冷饮"]},
- {yi:["多补充水分","适当运动出汗","高效学习工作","及时排尿","敲打腿后侧"],ji:["憋尿","久坐不饮水","过食咸味","受寒着凉","疲劳硬撑"]},
- {yi:["晚餐清淡适量","温水泡脚","放松休息","揉搓腰眼","适量黑色食物"],ji:["过度劳累","晚餐过饱","房劳过度","过食咸味","大汗淋漓"]},
- {yi:["散步、慢跑","温水沐浴","与家人愉快交谈","听舒缓音乐","按揉内关穴"],ji:["情绪压抑","剧烈争执","饱食即卧","刺激性影视","熬夜加班"]},
- {yi:["静卧修养生息","准备入眠","冥想、深呼吸","温水泡脚","23点前入睡"],ji:["熬夜玩手机","饮浓茶咖啡","思虑过度","剧烈运动","进食夜宵"]},
+ {"gist": "胆主决断，阳气初生，宜眠养阳", "do": [{"t": "23点前躺下", "why": "子时入睡阳气易生"}, {"t": "卧室全暗", "why": "暗光助褪黑素分泌"}, {"t": "写下明日待办", "why": "放下心事好入眠"}], "eat": [{"t": "不再进食", "why": "让脾胃随胆经休整"}, {"t": "口渴少量温水", "why": "润燥而不扰睡眠"}], "ji": [{"t": "熬夜赶工", "why": "耗伤初生之阳气"}, {"t": "深夜高脂宵夜", "why": "加重胆汁代谢负担"}, {"t": "睡前刷短视频", "why": "蓝光兴奋难入睡"}], "xue": {"name": "风池（胆经）", "how": "睡前指腹揉按，缓解颈肩紧张"}},
+ {"gist": "人卧血归于肝，肝藏血主疏泄", "do": [{"t": "保持深睡", "why": "卧则血归肝得养"}, {"t": "被褥温度适中", "why": "过热过冷易惊醒"}, {"t": "醒来不看时间", "why": "避免焦虑再难入睡"}], "eat": [{"t": "不进食不饮酒", "why": "让肝专心藏血"}, {"t": "晚间已食清淡", "why": "减轻夜间代谢负担"}], "ji": [{"t": "此时仍未睡", "why": "血不归肝，晨起乏力"}, {"t": "饮酒助眠", "why": "酒精扰乱深睡结构"}, {"t": "夜里生闷气", "why": "肝气郁结伤情志"}], "xue": {"name": "太冲（肝经）", "how": "白天按揉，疏肝解郁"}},
+ {"gist": "肺朝百脉，气血重新输布全身", "do": [{"t": "安稳续睡", "why": "肺布气血需静养"}, {"t": "盖好肩背", "why": "肺恶寒，防受凉"}, {"t": "起夜动作放缓", "why": "防体位性头晕"}], "eat": [{"t": "不进食", "why": "此时消化系统未醒"}, {"t": "干燥可备加湿器", "why": "肺喜润恶燥"}], "ji": [{"t": "空调直吹", "why": "寒邪易犯肺卫"}, {"t": "摸黑早起剧练", "why": "气血未匀心肺负担大"}, {"t": "卧室闷不通风", "why": "空气污浊影响呼吸"}], "xue": {"name": "太渊（肺经）", "how": "白天轻按，助益肺气"}},
+ {"gist": "大肠主传导，排浊纳新之时", "do": [{"t": "醒后喝杯温水", "why": "唤醒肠道助排便"}, {"t": "定时如厕", "why": "养成规律排便习惯"}, {"t": "开窗伸展五分钟", "why": "舒展筋骨振奋阳气"}], "eat": [{"t": "温水或淡蜂蜜水", "why": "润肠通便"}, {"t": "一根香蕉或几颗枣", "why": "补充晨起能量"}], "ji": [{"t": "有便意强忍", "why": "浊气滞留易便秘"}, {"t": "如厕玩手机久蹲", "why": "易诱发痔疮"}, {"t": "空腹冰饮", "why": "寒凉刺激肠胃"}], "xue": {"name": "合谷（大肠经）", "how": "拇指按压，提神醒脑"}},
+ {"gist": "胃主受纳，早餐最易消化吸收", "do": [{"t": "按时吃早餐", "why": "胃经当令受纳最佳"}, {"t": "细嚼慢咽十分钟", "why": "减轻胃的研磨负担"}, {"t": "通勤步行一段", "why": "助胃气通降"}], "eat": [{"t": "小米粥、燕麦", "why": "温养胃气"}, {"t": "鸡蛋、牛奶或豆浆", "why": "补充上午所需蛋白"}], "ji": [{"t": "不吃早餐", "why": "胃酸空耗伤胃黏膜"}, {"t": "边走边吃", "why": "吞入空气易胀气"}, {"t": "冰美式代替早餐", "why": "寒凉空腹刺激胃"}], "xue": {"name": "足三里（胃经）", "how": "按揉3分钟，健脾和胃"}},
+ {"gist": "脾主运化，升清输布精微", "do": [{"t": "处理最难的任务", "why": "气血充盈头脑清"}, {"t": "每小时起身走动", "why": "久坐伤肉亦困脾"}, {"t": "减少无谓纠结", "why": "思虑过度易伤脾"}], "eat": [{"t": "温水小口慢饮", "why": "助脾运化不碍湿"}, {"t": "一小把坚果", "why": "稳定血糖抗饥饿"}], "ji": [{"t": "甜点奶茶加餐", "why": "甜腻助湿困脾"}, {"t": "冷饮冰水", "why": "寒湿伤脾阳"}, {"t": "坐姿瘫软不动", "why": "脾主四肢需活动"}], "xue": {"name": "三阴交（脾经）", "how": "按揉酸胀为度，健脾祛湿"}},
+ {"gist": "心主血脉藏神，阴阳交替宜静", "do": [{"t": "午睡15–30分钟", "why": "养心安神恢复精力"}, {"t": "午餐吃七分饱", "why": "饱食加重心脏负担"}, {"t": "闭目静坐片刻", "why": "宁心调息"}], "eat": [{"t": "红色蔬果如番茄", "why": "色红入心，清爽开胃"}, {"t": "莲子或百合", "why": "清心安神"}], "ji": [{"t": "午睡超过1小时", "why": "醒后昏沉更疲倦"}, {"t": "趴桌压迫胸口", "why": "影响呼吸与血液循环"}, {"t": "午间激烈争论", "why": "情绪起伏扰心神"}], "xue": {"name": "神门（心经）", "how": "轻揉腕横纹，宁心安神"}},
+ {"gist": "小肠受盛化物，泌别清浊", "do": [{"t": "餐后散步十分钟", "why": "助小肠消化吸收"}, {"t": "转动肩颈", "why": "小肠经循行肩胛"}, {"t": "整理文档邮件", "why": "下午易困做轻活"}], "eat": [{"t": "一份水果", "why": "补充维生素与水分"}, {"t": "温开水", "why": "助清浊分别"}], "ji": [{"t": "饭后立即躺下", "why": "影响消化易反酸"}, {"t": "长时间低头看屏", "why": "肩颈僵硬劳损"}, {"t": "辛辣重口零食", "why": "刺激肠道生内热"}], "xue": {"name": "后溪（小肠经）", "how": "握拳敲击，缓解颈肩僵硬"}},
+ {"gist": "膀胱藏津液，主气化排泄", "do": [{"t": "主动喝一杯水", "why": "助膀胱气化代谢"}, {"t": "有尿意及时去", "why": "久憋伤膀胱"}, {"t": "站立拉伸腿后侧", "why": "膀胱经行于背腿后"}], "eat": [{"t": "淡茶或白开水", "why": "补水利小便"}, {"t": "冬瓜、薏米类", "why": "清淡利水"}], "ji": [{"t": "忙到忘记喝水", "why": "代谢废物难排出"}, {"t": "久憋小便", "why": "易致尿路不适"}, {"t": "咸辣零食", "why": "过咸加重水液负担"}], "xue": {"name": "委中（膀胱经）", "how": "拍打腘窝，舒缓腰背"}},
+ {"gist": "肾藏精，为先天之本，宜收敛", "do": [{"t": "准点下班收工", "why": "避免劳累伤肾精"}, {"t": "搓热双手捂后腰", "why": "温养腰府"}, {"t": "放慢节奏缓冲", "why": "由动转静养精"}], "eat": [{"t": "晚餐清淡七分饱", "why": "减轻夜间负担"}, {"t": "黑豆、黑芝麻、山药", "why": "平和补肾"}], "ji": [{"t": "持续高强度加班", "why": "过劳耗伤肾精"}, {"t": "晚餐重盐重口", "why": "咸多伤肾"}, {"t": "大汗淋漓的运动", "why": "汗多耗津伤气"}], "xue": {"name": "太溪（肾经）", "how": "按揉内踝后，滋补肾阴"}},
+ {"gist": "心包代心受邪，喜乐出焉", "do": [{"t": "饭后散步半小时", "why": "舒畅气血"}, {"t": "陪家人聊天", "why": "心情愉悦护心包"}, {"t": "听音乐或读闲书", "why": "放松心神"}], "eat": [{"t": "一杯温热牛奶", "why": "晚间温和不刺激"}, {"t": "少量水果", "why": "清淡解腻"}], "ji": [{"t": "压抑情绪不倾诉", "why": "郁结伤及心包"}, {"t": "争吵冲突", "why": "情绪剧烈扰心神"}, {"t": "恐怖刺激影视", "why": "心跳加速难平静"}], "xue": {"name": "内关（心包经）", "how": "按揉腕上二寸，宽胸理气"}},
+ {"gist": "三焦通调水道，百脉休养生息", "do": [{"t": "洗个温水澡", "why": "放松肌肉助入睡"}, {"t": "调暗灯光放下手机", "why": "为入睡做准备"}, {"t": "冥想或腹式呼吸", "why": "平复一日思绪"}], "eat": [{"t": "停止进食", "why": "空腹入睡更安稳"}, {"t": "睡前少喝水", "why": "减少起夜"}], "ji": [{"t": "工作带到床上", "why": "大脑持续兴奋"}, {"t": "睡前大量饮水", "why": "夜尿扰睡眠"}, {"t": "激烈游戏或运动", "why": "交感神经亢奋"}], "xue": {"name": "外关（三焦经）", "how": "按揉腕背，舒筋通络"}}
 ];
 const legend=document.getElementById("legend");
 ORDER.forEach((k,i)=>legend.insertAdjacentHTML("beforeend",`<span data-k="${k}"><i style="background:${M[k].color}"></i>${BR[i]} · ${M[k].name}</span>`));
@@ -673,8 +686,12 @@ function frame(tsec){
     document.getElementById("title").innerHTML=`${m.name}<em>当令</em>`;
     document.getElementById("dir").textContent=`循行　${m.dir}`;
     document.getElementById("route").innerHTML=`<b>起</b>${m.start}<br><b>止</b>${m.end}`;
-    document.getElementById("yi").innerHTML=YJ[idx].yi.map(x=>`<li>${x}</li>`).join("");
-    document.getElementById("ji").innerHTML=YJ[idx].ji.map(x=>`<li>${x}</li>`).join("");
+    const Y=YJ[idx], li=a=>a.map(x=>`<li><span>${x.t}<small>${x.why}</small></span></li>`).join("");
+    document.getElementById("gist").textContent=Y.gist;
+    document.getElementById("yi").innerHTML=li(Y.do);
+    document.getElementById("eat").innerHTML=li(Y.eat);
+    document.getElementById("ji").innerHTML=li(Y.ji);
+    document.getElementById("xue").innerHTML=`<b>${Y.xue.name}</b><small>${Y.xue.how}</small>`;
     legend.querySelectorAll("span").forEach(s=>s.classList.toggle("on",s.dataset.k===key));
   }
   document.getElementById("clk").innerHTML=`${p2(T.h)}:${p2(T.m)}<small>${p2(Math.floor(sf))}</small>`;
